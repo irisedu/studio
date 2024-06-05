@@ -1,0 +1,117 @@
+@import '@fontsource/vollkorn/400.css';
+@import '@fontsource/vollkorn/400-italic.css';
+@import '@fontsource/vollkorn/700.css';
+@import '@fontsource/vollkorn/700-italic.css';
+
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/400-italic.css';
+@import '@fontsource/ibm-plex-sans/700.css';
+@import '@fontsource/ibm-plex-sans/700-italic.css';
+
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/400-italic.css';
+@import '@fontsource/jetbrains-mono/700.css';
+@import '@fontsource/jetbrains-mono/700-italic.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		@apply scroll-smooth font-serif;
+
+		font-synthesis: none;
+		text-rendering: optimizeLegibility;
+	}
+
+	body {
+		@apply text-black;
+	}
+}
+
+@layer components {
+	/* A11y outlines */
+	.react-aria-Button,
+	.round-button {
+		@apply outline-none;
+
+		&[data-focus-visible] {
+			@apply outline outline-2 outline-blue-500;
+		}
+	}
+
+	.round-button {
+		@apply w-10 h-10 rounded-full;
+
+		&[data-hovered],
+		&[data-selected] {
+			@apply bg-zinc-200;
+		}
+
+		&[data-pressed] {
+			@apply bg-zinc-300;
+		}
+	}
+
+	/* Tabs */
+	.roundout-tabs {
+		@apply h-full;
+
+		.react-aria-TabList {
+			@apply flex flex-row h-full gap-2;
+		}
+
+		.react-aria-Tab {
+			@apply relative cursor-pointer font-sans text-lg text-black outline-none border-transparent border-[1px];
+
+			&[data-focus-visible] span {
+				@apply outline outline-2 outline-blue-500 -outline-offset-2;
+			}
+
+			&[data-selected] {
+				@apply bg-zinc-50 rounded-tl-[8px] rounded-tr-[8px] border-zinc-200 border-b-0;
+				box-shadow: 0 2px rgb(250, 250, 250);
+
+				/* https://css-tricks.com/tabs-with-round-out-borders/ */
+				span::before,
+				&::after {
+					@apply absolute content-[''] w-[8px] h-[8px] bg-zinc-100 -bottom-[0.75px] border-b-[1px] border-zinc-200;
+				}
+
+				&::before,
+				span::after {
+					@apply absolute content-[''] w-2 h-2 -bottom-[1px] bg-zinc-50;
+				}
+
+				span::before {
+					@apply rounded-br-full -left-[8px] border-r-[1px];
+				}
+
+				&::before {
+					@apply -left-2;
+				}
+
+				span::after {
+					@apply -right-2;
+				}
+
+				&::after {
+					@apply rounded-bl-full -right-[8px] border-l-[1px];
+				}
+			}
+
+			.dark &[data-selected] {
+				box-shadow: 0 2px rgb(24, 24, 27);
+			}
+
+			span {
+				@apply inline-flex items-center transition-none px-4 py-1.5 my-0.5 rounded-md;
+			}
+
+			&[data-hovered]:not([data-selected]) span {
+				@apply bg-zinc-50;
+			}
+		}
+	}
+}
