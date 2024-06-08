@@ -19,7 +19,7 @@ function App() {
 		<main className="bg-zinc-50 w-screen h-screen">
 			<Tabs className="roundout-tabs flex flex-col">
 				<TopBar>
-					<div className="flex flex-row gap-6 items-center grow">
+					<div className="flex flex-row gap-6 items-center grow overflow-x-scroll pb-32 -mb-32 px-2 no-scrollbar">
 						<TabList
 							data-tauri-drag-region
 							aria-label="Main tabs"

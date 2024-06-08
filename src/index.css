@@ -33,6 +33,7 @@
 @layer components {
 	/* A11y outlines */
 	.react-aria-Button,
+	.react-aria-TabPanel,
 	.round-button {
 		@apply outline-none;
 
@@ -63,7 +64,7 @@
 		}
 
 		.react-aria-Tab {
-			@apply relative cursor-pointer font-sans text-lg text-black outline-none border-transparent border-[1px];
+			@apply relative cursor-pointer font-sans text-lg text-black outline-none border-transparent border-[1px] whitespace-nowrap;
 
 			&[data-focus-visible] span {
 				@apply outline outline-2 outline-blue-500 -outline-offset-2;
@@ -112,6 +113,18 @@
 			&[data-hovered]:not([data-selected]) span {
 				@apply bg-zinc-50;
 			}
+		}
+	}
+}
+
+@layer utilities {
+	.no-scrollbar {
+		/* https://dev.to/derick1530/how-to-create-scrollable-element-in-tailwind-without-a-scrollbar-4mbd */
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
 		}
 	}
 }
