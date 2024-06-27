@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button } from 'react-aria-components';
+import { Button, MenuTrigger, Popover, Menu } from 'react-aria-components';
 import irisLogo from '$assets/iris-mono.svg';
 import { appWindow } from '@tauri-apps/api/window';
 import { platform } from '@tauri-apps/api/os';
@@ -36,7 +36,7 @@ function DarkToggle() {
 	);
 }
 
-function TopBar({ children }) {
+function TopBar({ menuItems, children }) {
 	const [showDeco, setShowDeco] = useState(false);
 
 	useEffect(() => {
@@ -50,13 +50,22 @@ function TopBar({ children }) {
 			data-tauri-drag-region
 			className="flex bg-zinc-100 flex-row gap-6 items-center h-14 w-full px-2 border-b-[1px] border-zinc-200"
 		>
-			<Button className="round-button w-12 h-12" aria-label="Iris Studio menu">
-				<img
-					src={irisLogo}
-					alt="Iris logo"
-					className="w-full h-full brightness-75 dark:brightness-150"
-				/>
-			</Button>
+			<MenuTrigger>
+				<Button
+					className="round-button w-12 h-12"
+					aria-label="Iris Studio menu"
+				>
+					<img
+						src={irisLogo}
+						alt="Iris logo"
+						className="w-full h-full brightness-75 dark:brightness-150"
+					/>
+				</Button>
+
+				<Popover>
+					<Menu>{menuItems}</Menu>
+				</Popover>
+			</MenuTrigger>
 
 			{children}
 

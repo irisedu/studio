@@ -25,6 +25,12 @@
         "unmaximize": true,
         "unminimize": true,
         "startDragging": true
+      },
+      "app": {
+        "all": true
+      },
+      "shell": {
+        "open": true
       }
     },
     "windows": [

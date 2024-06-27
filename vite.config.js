@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import Icons from 'unplugin-icons/vite';
+import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -10,6 +11,11 @@ export default defineConfig(async () => ({
 		Icons({
 			compiler: 'jsx',
 			jsx: 'react'
+		}),
+		svgr({
+			svgrOptions: {
+				dimensions: false
+			}
 		})
 	],
 
