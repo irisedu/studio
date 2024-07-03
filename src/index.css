@@ -13,65 +13,19 @@
 @import '@fontsource/jetbrains-mono/700.css';
 @import '@fontsource/jetbrains-mono/700-italic.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
 
-@layer base {
-	:root {
-		@apply scroll-smooth font-serif;
+@import 'iris/styles/index.css';
 
-		font-synthesis: none;
-		text-rendering: optimizeLegibility;
-	}
+@import 'tailwindcss/utilities';
 
-	body {
-		@apply text-black;
-	}
-
-	h1 {
-		@apply text-2xl font-bold my-3;
-	}
-
-	h2 {
-		@apply text-xl font-bold my-3;
-	}
-
-	h3 {
-		@apply text-lg font-bold my-2.5;
-	}
-
-	h4 {
-		@apply font-bold my-2.5;
-	}
-
-	p {
-		@apply mb-3 last:mb-0;
-	}
-
-	dl {
-		dt {
-			@apply font-bold;
-		}
-
-		dd {
-			@apply ml-4;
-		}
-	}
+:root {
+	@apply scroll-smooth font-serif;
 }
 
-/* A11y outlines */
-*[data-rac] {
-	@apply outline-none;
-
-	&[data-focus-visible] {
-		@apply outline outline-2 outline-blue-500;
-	}
-}
-
-.focus-outline {
-	/* Non-react-aria only */
-	@apply outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500;
+body {
+	@apply text-black;
 }
 
 .round-button {
@@ -79,15 +33,14 @@
 
 	&[data-hovered],
 	&[data-selected] {
-		@apply bg-zinc-200;
+		@apply bg-iris-200;
 	}
 
 	&[data-pressed] {
-		@apply bg-zinc-300;
+		@apply bg-iris-300;
 	}
 }
 
-/* Tabs */
 .roundout-tabs {
 	@apply h-full;
 
@@ -99,22 +52,22 @@
 		@apply relative cursor-pointer font-sans text-lg text-black outline-none border-transparent border-[1px] whitespace-nowrap;
 
 		&[data-focus-visible] span {
-			@apply outline outline-2 outline-blue-500 -outline-offset-2;
+			@apply outline outline-2 outline-iris-500 -outline-offset-2;
 		}
 
 		&[data-selected] {
-			@apply bg-zinc-50 rounded-tl-[8px] rounded-tr-[8px] border-zinc-200 border-b-0;
+			@apply bg-iris-50 rounded-tl-[8px] rounded-tr-[8px] border-iris-200 border-b-0;
 			box-shadow: 0 2px rgb(250, 250, 250);
 
 			/* https://css-tricks.com/tabs-with-round-out-borders/ */
 			span::before,
 			&::after {
-				@apply absolute content-[''] w-[8px] h-[8px] bg-zinc-100 -bottom-[0.75px] border-b-[1px] border-zinc-200;
+				@apply absolute content-[''] w-[8px] h-[8px] bg-iris-100 -bottom-[0.75px] border-b-[1px] border-iris-200;
 			}
 
 			&::before,
 			span::after {
-				@apply absolute content-[''] w-2 h-2 -bottom-[1px] bg-zinc-50;
+				@apply absolute content-[''] w-2 h-2 -bottom-[1px] bg-iris-50;
 			}
 
 			span::before {
@@ -145,11 +98,11 @@
 				@apply rounded-full p-0.5 transition-opacity duration-100;
 
 				&[data-hovered] {
-					@apply text-white bg-zinc-700;
+					@apply text-white bg-iris-700;
 				}
 
 				&[data-pressed] {
-					@apply text-white bg-zinc-600;
+					@apply text-white bg-iris-600;
 				}
 			}
 		}
@@ -161,7 +114,7 @@
 		}
 
 		&[data-hovered]:not([data-selected]) span {
-			@apply bg-zinc-50;
+			@apply bg-iris-50;
 
 			.roundout-tabs__close {
 				@apply opacity-100;
@@ -180,70 +133,4 @@
 			display: none;
 		}
 	}
-}
-
-.react-aria-Link {
-	@apply text-blue-800 hover:text-blue-700 hover:underline decoration-2 underline-offset-2 cursor-pointer;
-
-	&.external {
-		@apply after:content-['↗'];
-	}
-}
-
-.react-aria-Popover {
-	@apply outline-none rounded-lg bg-zinc-100 border-2 border-zinc-200;
-
-	/* Animation from react-aria docs */
-	&[data-placement='top'] {
-		--origin: translateY(5px);
-	}
-
-	&[data-placement='bottom'] {
-		--origin: translateY(-5px);
-	}
-
-	&[data-placement='left'] {
-		--origin: translateY(5px);
-	}
-
-	&[data-placement='right'] {
-		--origin: translateY(-5px);
-	}
-
-	&[data-entering] {
-		animation: popover-slide 150ms;
-	}
-
-	&[data-exiting] {
-		animation: popover-slide 150ms reverse ease-in;
-	}
-}
-
-@keyframes popover-slide {
-	from {
-		transform: var(--origin);
-		opacity: 0;
-	}
-
-	to {
-		transform: translateY(0);
-		opacity: 1;
-	}
-}
-
-/* Menu */
-.react-aria-Menu {
-	@apply font-sans outline-none overflow-auto p-0.5 min-w-44;
-}
-
-.react-aria-MenuItem {
-	@apply m-1 px-2 py-1 rounded-lg cursor-pointer;
-
-	&[data-focused] {
-		@apply bg-zinc-200 outline-none;
-	}
-}
-
-.react-aria-Separator {
-	@apply bg-zinc-200 h-0.5 mx-2 my-1;
 }

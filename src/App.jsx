@@ -92,7 +92,7 @@ function App() {
 	}, [currentTab, advanceTab, closeTab]);
 
 	return (
-		<main className="bg-zinc-50 w-screen h-screen">
+		<main className="bg-iris-50 w-screen h-screen">
 			<TabsContext.Provider
 				value={{ selectedKey: currentTab, onSelectionChange: setCurrentTab }}
 			>
@@ -129,9 +129,9 @@ function App() {
 								onChange={setSidebarOpen}
 							>
 								{sidebarOpen ? (
-									<SidebarRightFilled className="text-zinc-400 w-6 h-6 m-auto" />
+									<SidebarRightFilled className="text-iris-400 w-6 h-6 m-auto" />
 								) : (
-									<SidebarRight className="text-zinc-400 w-6 h-6 m-auto" />
+									<SidebarRight className="text-iris-400 w-6 h-6 m-auto" />
 								)}
 							</ToggleButton>
 						</div>
@@ -148,12 +148,12 @@ function App() {
 
 						{sidebarOpen && (
 							<>
-								<PanelResizeHandle className="w-[2px] bg-zinc-300 data-[resize-handle-state='drag']:bg-zinc-400 focus-outline" />
+								<PanelResizeHandle className="w-[2px] bg-iris-300 data-[resize-handle-state='drag']:bg-iris-400 focus-outline" />
 
 								<Panel
 									defaultSize={20}
 									minSize={15}
-									className="relative bg-zinc-100"
+									className="relative bg-iris-100"
 								>
 									<p>Hi</p>
 								</Panel>
