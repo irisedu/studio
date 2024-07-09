@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import TopBar from '$components/TopBar.jsx';
+import Sidebar from '$components/Sidebar.jsx';
 import * as welcomeTab from '$components/tabs/WelcomeTab.jsx';
 import * as diagnosticsTab from '$components/tabs/DiagnosticsTab.jsx';
 import {
@@ -14,11 +15,11 @@ import {
 } from 'react-aria-components';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 import { appWindow } from '@tauri-apps/api/window';
+import { TabsContext } from 'react-aria-components';
 
 import SidebarRight from '~icons/tabler/layout-sidebar-right';
 import SidebarRightFilled from '~icons/tabler/layout-sidebar-right-filled';
 import X from '~icons/tabler/x';
-import { TabsContext } from 'react-aria-components';
 
 function MenuItems({ openTab }) {
 	return (
@@ -34,10 +35,11 @@ function MenuItems({ openTab }) {
 }
 
 function App() {
-	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const [tabs, setTabs] = useState([welcomeTab]);
 	const [currentTab, setCurrentTab] = useState(null);
-	const [newTab, setNewTab] = useState(null);
+
+	const [openDirectory, setOpenDirectory] = useState(null);
 
 	const openTab = useCallback(
 		(tabObj) => {
@@ -45,7 +47,7 @@ function App() {
 				setTabs([...tabs, tabObj]);
 			}
 
-			setNewTab(tabObj.id);
+			setTimeout(() => setCurrentTab(tabObj.id), 40);
 		},
 		[tabs]
 	);
@@ -67,13 +69,6 @@ function App() {
 		},
 		[tabs, currentTab]
 	);
-
-	useEffect(() => {
-		if (!newTab) return;
-
-		setCurrentTab(newTab);
-		setNewTab(null);
-	}, [newTab]);
 
 	useEffect(() => {
 		function onKeyDown(e) {
@@ -155,7 +150,15 @@ function App() {
 									minSize={15}
 									className="relative bg-iris-100"
 								>
-									<p>Hi</p>
+									<Sidebar
+										openDirectory={openDirectory}
+										setOpenDirectory={setOpenDirectory}
+										tabs={tabs}
+										setTabs={setTabs}
+										openTab={openTab}
+										currentTab={currentTab}
+										setCurrentTab={setCurrentTab}
+									/>
 								</Panel>
 							</>
 						)}

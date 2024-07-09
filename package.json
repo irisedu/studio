@@ -14,9 +14,11 @@
 	"dependencies": {
 		"@tauri-apps/api": "^1",
 		"react": "^18.2.0",
+		"react-arborist": "^3.4.0",
 		"react-aria-components": "^1.2.1",
 		"react-dom": "^18.2.0",
-		"react-resizable-panels": "^2.0.19"
+		"react-resizable-panels": "^2.0.19",
+		"use-resize-observer": "^9.1.0"
 	},
 	"devDependencies": {
 		"@fontsource/ibm-plex-sans": "^5.0.20",
