@@ -15,7 +15,6 @@ import {
 } from 'react-aria-components';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 import { appWindow } from '@tauri-apps/api/window';
-import { TabsContext } from 'react-aria-components';
 
 import SidebarRight from '~icons/tabler/layout-sidebar-right';
 import SidebarRightFilled from '~icons/tabler/layout-sidebar-right-filled';
@@ -88,83 +87,83 @@ function App() {
 
 	return (
 		<main className="bg-iris-50 w-screen h-screen">
-			<TabsContext.Provider
-				value={{ selectedKey: currentTab, onSelectionChange: setCurrentTab }}
+			<Tabs
+				className="roundout-tabs flex flex-col"
+				selectedKey={currentTab}
+				onSelectionChange={setCurrentTab}
 			>
-				<Tabs className="roundout-tabs flex flex-col">
-					<TopBar menuItems={<MenuItems openTab={openTab} />}>
-						<div className="flex flex-row gap-6 items-center grow overflow-x-scroll pb-32 -mb-32 px-2 no-scrollbar">
-							<TabList
-								data-tauri-drag-region
-								aria-label="Main tabs"
-								className="react-aria-TabList pt-2 grow"
-							>
-								{tabs.map((tab) => (
-									<Tab id={tab.id} key={tab.id}>
-										<span className="flex flex-row gap-2">
-											{tab.getIcon()}
-											{tab.title}
-											<Button
-												className="roundout-tabs__close"
-												aria-label="Close tab"
-												excludeFromTabOrder
-												onPress={() => closeTab(tab.id)}
-											>
-												<X className="w-3 h-3" />
-											</Button>
-										</span>
-									</Tab>
-								))}
-							</TabList>
-
-							<ToggleButton
-								className="round-button"
-								aria-label="Toggle sidebar"
-								isSelected={sidebarOpen}
-								onChange={setSidebarOpen}
-							>
-								{sidebarOpen ? (
-									<SidebarRightFilled className="text-iris-400 w-6 h-6 m-auto" />
-								) : (
-									<SidebarRight className="text-iris-400 w-6 h-6 m-auto" />
-								)}
-							</ToggleButton>
-						</div>
-					</TopBar>
-
-					<PanelGroup autoSaveId="main" direction="horizontal" className="grow">
-						<Panel defaultSize={80} minSize={50}>
+				<TopBar menuItems={<MenuItems openTab={openTab} />}>
+					<div className="flex flex-row gap-6 items-center grow overflow-x-scroll pb-32 -mb-32 px-2 no-scrollbar">
+						<TabList
+							data-tauri-drag-region
+							aria-label="Main tabs"
+							className="react-aria-TabList pt-2 grow"
+						>
 							{tabs.map((tab) => (
-								<TabPanel id={tab.id} key={tab.id} shouldForceMount>
-									{tab.getView()}
-								</TabPanel>
+								<Tab id={tab.id} key={tab.id}>
+									<span className="flex flex-row gap-2">
+										{tab.getIcon()}
+										{tab.title}
+										<Button
+											className="roundout-tabs__close"
+											aria-label="Close tab"
+											excludeFromTabOrder
+											onPress={() => closeTab(tab.id)}
+										>
+											<X className="w-3 h-3" />
+										</Button>
+									</span>
+								</Tab>
 							))}
-						</Panel>
+						</TabList>
 
-						{sidebarOpen && (
-							<>
-								<PanelResizeHandle className="w-[2px] bg-iris-300 data-[resize-handle-state='drag']:bg-iris-400 focus-outline" />
+						<ToggleButton
+							className="round-button"
+							aria-label="Toggle sidebar"
+							isSelected={sidebarOpen}
+							onChange={setSidebarOpen}
+						>
+							{sidebarOpen ? (
+								<SidebarRightFilled className="text-iris-400 w-6 h-6 m-auto" />
+							) : (
+								<SidebarRight className="text-iris-400 w-6 h-6 m-auto" />
+							)}
+						</ToggleButton>
+					</div>
+				</TopBar>
 
-								<Panel
-									defaultSize={20}
-									minSize={15}
-									className="relative bg-iris-100"
-								>
-									<Sidebar
-										openDirectory={openDirectory}
-										setOpenDirectory={setOpenDirectory}
-										tabs={tabs}
-										setTabs={setTabs}
-										openTab={openTab}
-										currentTab={currentTab}
-										setCurrentTab={setCurrentTab}
-									/>
-								</Panel>
-							</>
-						)}
-					</PanelGroup>
-				</Tabs>
-			</TabsContext.Provider>
+				<PanelGroup autoSaveId="main" direction="horizontal" className="grow">
+					<Panel defaultSize={80} minSize={50}>
+						{tabs.map((tab) => (
+							<TabPanel id={tab.id} key={tab.id}>
+								{tab.getView()}
+							</TabPanel>
+						))}
+					</Panel>
+
+					{sidebarOpen && (
+						<>
+							<PanelResizeHandle className="w-[2px] bg-iris-300 data-[resize-handle-state='drag']:bg-iris-400 focus-outline" />
+
+							<Panel
+								defaultSize={20}
+								minSize={15}
+								className="relative bg-iris-100"
+							>
+								<Sidebar
+									openDirectory={openDirectory}
+									setOpenDirectory={setOpenDirectory}
+									tabs={tabs}
+									setTabs={setTabs}
+									openTab={openTab}
+									currentTab={currentTab}
+									setCurrentTab={setCurrentTab}
+								/>
+							</Panel>
+						</>
+					)}
+				</PanelGroup>
+			</Tabs>
 		</main>
 	);
 }

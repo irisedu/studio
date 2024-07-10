@@ -121,12 +121,6 @@ body {
 			}
 		}
 	}
-
-	.react-aria-TabPanel {
-		&[data-inert] {
-			@apply hidden;
-		}
-	}
 }
 
 @layer utilities {
