@@ -5,6 +5,7 @@ import irisLogo from '$assets/iris-mono.svg';
 
 function WelcomeTab() {
 	const [version, setVersion] = useState('...');
+	const [count, setCount] = useState(0);
 
 	useEffect(() => {
 		getVersion().then(setVersion);
@@ -12,6 +13,7 @@ function WelcomeTab() {
 
 	return (
 		<div className="flex flex-col items-center m-2">
+			<button onClick={() => setCount(count + 1)}>{count}</button>
 			<Iris className="fill-black max-w-72" />
 			<p className="text-lg font-sans">Iris Studio, version {version}</p>
 		</div>

@@ -72,5 +72,5 @@ export function getView() {
 }
 
 export function getIcon() {
-	return <Bug className="w-5 h-5" />;
+	return <Bug className="text-iris-500 w-5 h-5" />;
 }

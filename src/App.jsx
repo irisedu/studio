@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import TopBar from '$components/TopBar.jsx';
 import Sidebar from '$components/Sidebar.jsx';
 import * as welcomeTab from '$components/tabs/WelcomeTab.jsx';
@@ -135,7 +135,7 @@ function App() {
 					<PanelGroup autoSaveId="main" direction="horizontal" className="grow">
 						<Panel defaultSize={80} minSize={50}>
 							{tabs.map((tab) => (
-								<TabPanel id={tab.id} key={tab.id}>
+								<TabPanel id={tab.id} key={tab.id} shouldForceMount>
 									{tab.getView()}
 								</TabPanel>
 							))}
