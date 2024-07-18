@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
 	Button,
 	MenuTrigger,
@@ -10,19 +10,18 @@ import {
 	Input
 } from 'react-aria-components';
 import { open as openDialog } from '@tauri-apps/api/dialog';
-import { homeDir, basename, sep } from '@tauri-apps/api/path';
+import { homeDir, basename } from '@tauri-apps/api/path';
 import {
-	readDir,
 	renameFile,
 	removeFile,
 	removeDir,
 	createDir,
-	exists,
 	writeFile
 } from '@tauri-apps/api/fs';
 import { Tree } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
 
+import { ROOT_ID, DirectoryTree, filterFileOp } from './DirectoryTree.js';
 import DeleteDialog from '$components/DeleteDialog.jsx';
 import OverwriteDialog from '$components/OverwriteDialog.jsx';
 import { FILE_PREFIX, pathIcon, makeTab } from '$components/tabs/FileTab.jsx';
@@ -31,41 +30,6 @@ import '$components/Sidebar.css';
 import Folder from '~icons/tabler/folder-filled';
 import ChevronDown from '~icons/tabler/chevron-down';
 import ChevronRight from '~icons/tabler/chevron-right';
-
-const ROOT_ID = '__REACT_ARBORIST_INTERNAL_ROOT__';
-
-function dirToTree(entries) {
-	const out = [];
-
-	for (const entry of entries) {
-		const isFolder = entry.children !== undefined;
-		out.push({
-			id: entry.path,
-			name: entry.name,
-			isFolder,
-			children: isFolder ? dirToTree(entry.children) : undefined
-		});
-	}
-
-	return out;
-}
-
-function sortTree(tree) {
-	tree.sort((a, b) => {
-		if (a.isFolder && !b.isFolder) return -1;
-		if (b.isFolder && !a.isFolder) return 1;
-
-		return a.name.localeCompare(b.name);
-	});
-
-	tree.forEach((node) => node.children && sortTree(node.children));
-}
-
-function reloadDir(openDirectory, setTreeData) {
-	readDir(openDirectory, { recursive: true }).then((entries) => {
-		setTreeData(dirToTree(entries));
-	});
-}
 
 async function openProject(setOpenDirectory) {
 	const selected = await openDialog({
@@ -80,52 +44,6 @@ async function openProject(setOpenDirectory) {
 	}
 }
 
-function disableDrop({ parentNode, dragNodes }) {
-	if (dragNodes.every((n) => n.parent.id === parentNode.id)) return true;
-	return false;
-}
-
-function modifyTree(treeData, cb) {
-	return treeData.map((node) => {
-		const newNode = structuredClone(node);
-		if (node.children) newNode.children = modifyTree(node.children, cb);
-		cb(newNode);
-
-		return newNode;
-	});
-}
-
-function nodeAncestors(node) {
-	const ancestors = [];
-
-	while (node.parent) {
-		ancestors.push(node.parent.id);
-		node = node.parent;
-	}
-
-	return ancestors;
-}
-
-function filterFileOp(nodes) {
-	return nodes.filter((n) => {
-		const ancestors = nodeAncestors(n);
-		return !nodes.some((p) => ancestors.includes(p.id));
-	});
-}
-
-function renameDescendants(from, to, renameMap, children) {
-	return children.map((c) => {
-		const newId = to + c.id.slice(from.length);
-		renameMap[c.id] = newId;
-		return {
-			id: newId,
-			name: c.name,
-			isFolder: c.isFolder,
-			children: c.children && renameDescendants(from, to, c.children)
-		};
-	});
-}
-
 function updateTabs(
 	renameMap,
 	openDirectory,
@@ -137,6 +55,7 @@ function updateTabs(
 	setTabs(
 		tabs.map((tab) => {
 			if (!tab.id.startsWith(FILE_PREFIX)) return tab;
+
 			const tabFile = tab.id.substr(FILE_PREFIX.length);
 
 			if (renameMap[tabFile]) {
@@ -155,361 +74,6 @@ function updateTabs(
 			() => setCurrentTab(FILE_PREFIX + renameMap[currentTabFile]),
 			40
 		);
-}
-
-async function onRenameInternal(
-	id,
-	newId,
-	origParentId,
-	insertParentId,
-	immediateParentId,
-	fileExists,
-	newSubtree,
-	origNode,
-	openDirectory,
-	tree,
-	treeData,
-	setTreeData,
-	tabs,
-	setTabs,
-	currentTab,
-	setCurrentTab,
-	renameMap
-) {
-	// Remove the original node from the tree
-	let newTree = modifyTree(treeData, (node) => {
-		if (node.children) node.children = node.children.filter((c) => c.id !== id);
-	}).filter((c) => c.id !== id);
-
-	if (!fileExists) {
-		// Insert the new node
-		if (origNode.level === 0 && insertParentId === origParentId) {
-			newTree.push(newSubtree);
-		} else {
-			newTree = modifyTree(newTree, (node) => {
-				if (node.id === insertParentId) node.children.push(newSubtree);
-			});
-		}
-	}
-
-	setTreeData(newTree);
-	setTimeout(() => tree.select(newId), 20);
-
-	await createDir(immediateParentId, { recursive: true });
-	await renameFile(id, newId);
-
-	updateTabs(
-		renameMap,
-		openDirectory,
-		tabs,
-		setTabs,
-		currentTab,
-		setCurrentTab
-	);
-}
-
-async function onRename(
-	{ id, name },
-	openDirectory,
-	tree,
-	treeData,
-	setTreeData,
-	tabs,
-	setTabs,
-	currentTab,
-	setCurrentTab,
-	setOverwriteOpen,
-	setOverwritePaths,
-	overwriteCb
-) {
-	const origNode = tree.get(id);
-	const origName = origNode.data.name;
-	if (origName === name) return;
-
-	const origParentId = id.slice(0, -origName.length - 1);
-
-	let newSubtree;
-	let prevId = origParentId;
-	let prevNode;
-	let newId;
-	let insertParentId = origParentId; // parent to insert the newSubtree
-	let immediateParentId = origParentId; // immediate parent for use with recursive mkdir
-	const renameMap = {};
-
-	const split = name.split(sep);
-	split.forEach((part, i) => {
-		const partId = prevId + sep + part;
-		prevId = partId;
-
-		const isFolder = i !== split.length - 1 || origNode.data.isFolder;
-
-		if (i === split.length - 2) immediateParentId = partId;
-		if (i === split.length - 1) {
-			newId = partId;
-			renameMap[id] = newId;
-		}
-
-		// Part of the subtree might already exist
-		if (tree.get(partId)) {
-			if (isFolder) insertParentId = partId;
-			return;
-		}
-
-		const newNode = {
-			id: partId,
-			name: part,
-			isFolder,
-			children: isFolder ? [] : undefined
-		};
-
-		// Update descendants
-		if (i === split.length - 1 && origNode.data.children) {
-			newNode.children = renameDescendants(
-				id,
-				newId,
-				renameMap,
-				origNode.data.children
-			);
-		}
-
-		if (!newSubtree) newSubtree = newNode;
-		if (prevNode) prevNode.children.push(newNode);
-		prevNode = newNode;
-	});
-
-	const fileExists = await exists(newId);
-
-	const doRename = async () =>
-		await onRenameInternal(
-			id,
-			newId,
-			origParentId,
-			insertParentId,
-			immediateParentId,
-			fileExists,
-			newSubtree,
-			origNode,
-			openDirectory,
-			tree,
-			treeData,
-			setTreeData,
-			tabs,
-			setTabs,
-			currentTab,
-			setCurrentTab,
-			renameMap
-		);
-
-	if (fileExists && overwriteCb) {
-		overwriteCb.current = doRename;
-		setOverwritePaths([newId]);
-		setOverwriteOpen(true);
-		return;
-	}
-
-	await doRename();
-}
-
-function onDelete(nodes, tree, treeData, setTreeData, tabs, setTabs) {
-	const nodeFilter = (n1) => !nodes.some((n2) => n1.id === n2.id);
-
-	setTreeData(
-		modifyTree(treeData, (node) => {
-			if (node.children) {
-				node.children = node.children.filter(nodeFilter);
-			}
-		}).filter(nodeFilter)
-	);
-
-	tree.focus(nodes[0].prev);
-	tree.deselectAll();
-
-	Promise.all(
-		nodes.map((n) => {
-			return n.data.isFolder
-				? removeDir(n.id, { recursive: true })
-				: removeFile(n.id);
-		})
-	);
-
-	setTabs(
-		tabs.filter((t) => !nodes.some((n) => t.id.startsWith(FILE_PREFIX + n.id)))
-	);
-}
-
-async function onMoveInternal(
-	parentId,
-	nodeInfo,
-	openDirectory,
-	treeData,
-	setTreeData,
-	tabs,
-	setTabs,
-	currentTab,
-	setCurrentTab,
-	renameMap
-) {
-	// Remove old
-	let newTree = modifyTree(treeData, (node) => {
-		if (node.children)
-			node.children = node.children.filter(
-				(c) => !nodeInfo.some((i) => i.id === c.id)
-			);
-	}).filter((c) => !nodeInfo.some((i) => i.id === c.id));
-
-	// Insert new
-	const newChildren = nodeInfo.filter((n) => !n.exists).map((n) => n.data);
-
-	if (parentId === null) {
-		newTree = newTree.concat(newChildren);
-	} else {
-		newTree = modifyTree(newTree, (node) => {
-			if (node.id !== parentId) return;
-
-			node.children = node.children.concat(newChildren);
-		});
-	}
-
-	setTreeData(newTree);
-
-	await Promise.all(
-		nodeInfo.map((info) => {
-			return renameFile(info.id, info.newId);
-		})
-	);
-
-	updateTabs(
-		renameMap,
-		openDirectory,
-		tabs,
-		setTabs,
-		currentTab,
-		setCurrentTab
-	);
-}
-
-async function onMove(
-	{ dragIds, parentId },
-	openDirectory,
-	tree,
-	treeData,
-	setTreeData,
-	tabs,
-	setTabs,
-	currentTab,
-	setCurrentTab,
-	setOverwriteOpen,
-	setOverwritePaths,
-	overwriteCb
-) {
-	const nodes = filterFileOp(dragIds.map((id) => tree.get(id))).filter(
-		(n) =>
-			n.parent.id !== parentId &&
-			!(parentId === null && n.parent.id === ROOT_ID)
-	);
-
-	const renameMap = {};
-	const nodeInfo = await Promise.all(
-		nodes.map((node) => {
-			const id = node.id;
-			const newId = (parentId || openDirectory) + sep + node.data.name;
-			renameMap[id] = newId;
-
-			const newData = structuredClone(node.data);
-			newData.id = newId;
-			if (node.data.children)
-				newData.children = renameDescendants(
-					id,
-					newId,
-					renameMap,
-					node.data.children
-				);
-
-			return exists(newId).then((res) => ({
-				id,
-				newId,
-				data: newData,
-				exists: res
-			}));
-		})
-	);
-
-	const doMove = async () =>
-		await onMoveInternal(
-			parentId,
-			nodeInfo,
-			openDirectory,
-			treeData,
-			setTreeData,
-			tabs,
-			setTabs,
-			currentTab,
-			setCurrentTab,
-			renameMap
-		);
-
-	const overwritePaths = nodeInfo.filter((i) => i.exists).map((i) => i.newId);
-	if (overwritePaths.length) {
-		overwriteCb.current = doMove;
-		setOverwritePaths(overwritePaths);
-		setOverwriteOpen(true);
-		return;
-	}
-
-	await doMove();
-}
-
-async function onCreate(
-	{ parentId, type },
-	openDirectory,
-	tree,
-	treeData,
-	setTreeData
-) {
-	const isFolder = type === 'internal';
-	const baseFileName = isFolder ? 'new-folder' : 'new-file';
-	const baseDirectory = parentId || openDirectory;
-
-	let fileName = baseFileName;
-	let fileNum = 1;
-	while (tree.get(baseDirectory + sep + fileName)) {
-		fileName = `${baseFileName}-${fileNum}`;
-		fileNum++;
-	}
-
-	const newNode = {
-		id: baseDirectory + sep + fileName,
-		name: fileName,
-		isFolder,
-		children: isFolder ? [] : undefined
-	};
-
-	let newTree;
-
-	if (parentId === null) {
-		newTree = treeData.concat([newNode]);
-	} else {
-		newTree = modifyTree(treeData, (node) => {
-			if (node.id !== parentId) return;
-			node.children.push(newNode);
-		});
-	}
-
-	setTreeData(newTree);
-
-	if (isFolder) {
-		await createDir(newNode.id);
-	} else {
-		await writeFile(newNode.id, '');
-	}
-
-	setTimeout(() => {
-		const node = tree.get(newNode.id);
-		node.select();
-		node.edit();
-	}, 20);
-
-	return newNode;
 }
 
 function treeCreate(tree, type) {
@@ -651,13 +215,17 @@ function Sidebar({
 	setCurrentTab
 }) {
 	const [dirDisplay, setDirDisplay] = useState(null);
-	const [treeData, setTreeDataInternal] = useState([]);
+	const tree = useRef();
 	const {
 		ref: resizeRef,
 		width: treeWidth,
 		height: treeHeight
 	} = useResizeObserver();
-	const tree = useRef();
+
+	const [treeData, setTreeData] = useState(new DirectoryTree(tree));
+	const reloadDir = useCallback(() => {
+		treeData.readFromDir(openDirectory).then(setTreeData);
+	}, [treeData, openDirectory]);
 
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [deletePaths, setDeletePaths] = useState([]);
@@ -665,8 +233,22 @@ function Sidebar({
 	function promptDelete() {
 		const nodes = filterFileOp(tree.current.selectedNodes);
 		setDeletePaths(nodes.map((n) => n.data.name));
-		deleteCb.current = () =>
-			onDelete(nodes, tree.current, treeData, setTreeData, tabs, setTabs);
+		deleteCb.current = () => {
+			setTreeData(treeData.onDelete(nodes));
+
+			Promise.all(
+				nodes.map((n) => {
+					return n.data.isFolder
+						? removeDir(n.id, { recursive: true })
+						: removeFile(n.id);
+				})
+			);
+
+			setTabs(
+				tabs.filter((t) => !nodes.some((n) => t.id === FILE_PREFIX + n.id))
+			);
+		};
+
 		setDeleteOpen(true);
 	}
 
@@ -677,17 +259,12 @@ function Sidebar({
 	const [contextOpen, setContextOpen] = useState(false);
 	const contextTarget = useRef();
 
-	function setTreeData(value) {
-		sortTree(value);
-		setTreeDataInternal(value);
-	}
-
 	useEffect(() => {
 		if (!openDirectory) return;
 
 		basename(openDirectory).then(setDirDisplay);
-		reloadDir(openDirectory, setTreeData);
-	}, [openDirectory]);
+		reloadDir();
+	}, [reloadDir, openDirectory]);
 
 	return (
 		<div className="font-sans text-lg w-full h-full p-2">
@@ -742,7 +319,7 @@ function Sidebar({
 					)}
 					<MenuItem
 						onAction={() => {
-							openDirectory && reloadDir(openDirectory, setTreeData);
+							openDirectory && reloadDir();
 							setContextOpen(false);
 						}}
 					>
@@ -763,11 +340,7 @@ function Sidebar({
 
 				<Popover>
 					<Menu>
-						<MenuItem
-							onAction={() =>
-								openDirectory && reloadDir(openDirectory, setTreeData)
-							}
-						>
+						<MenuItem onAction={() => openDirectory && reloadDir()}>
 							Refresh
 						</MenuItem>
 						<MenuItem onAction={() => openProject(setOpenDirectory)}>
@@ -799,43 +372,95 @@ function Sidebar({
 				}}
 			>
 				<Tree
-					data={treeData}
-					disableDrop={disableDrop}
+					data={treeData.data}
 					disableEdit={false}
-					onRename={(args) =>
-						onRename(
+					disableDrop={(args) => treeData.disableDrop(args)}
+					onCreate={async (args) => {
+						const { newTree, newNode } = treeData.onCreate(args, openDirectory);
+						setTreeData(newTree);
+
+						if (newNode.isFolder) {
+							await createDir(newNode.id);
+						} else {
+							await writeFile(newNode.id, '');
+						}
+
+						return newNode;
+					}}
+					onRename={async (args) => {
+						const res = await treeData.onRename(args);
+						if (!res) return;
+
+						const {
+							newTree,
+							oldId,
+							newId,
+							immediateParentId,
+							renameMap,
+							fileExists
+						} = res;
+
+						const doRename = async () => {
+							setTreeData(newTree);
+							setTimeout(() => tree.current.select(newId), 20);
+
+							await createDir(immediateParentId, { recursive: true });
+							await renameFile(oldId, newId);
+
+							updateTabs(
+								renameMap,
+								openDirectory,
+								tabs,
+								setTabs,
+								currentTab,
+								setCurrentTab
+							);
+						};
+
+						if (fileExists) {
+							overwriteCb.current = doRename;
+							setOverwritePaths([newId]);
+							setOverwriteOpen(true);
+						} else {
+							await doRename();
+						}
+					}}
+					onMove={async (args) => {
+						const { newTree, nodeInfo, renameMap } = await treeData.onMove(
 							args,
-							openDirectory,
-							tree.current,
-							treeData,
-							setTreeData,
-							tabs,
-							setTabs,
-							currentTab,
-							setCurrentTab,
-							setOverwriteOpen,
-							setOverwritePaths,
-							overwriteCb
-						)
-					}
-					onMove={(args) =>
-						onMove(
-							args,
-							openDirectory,
-							tree.current,
-							treeData,
-							setTreeData,
-							tabs,
-							setTabs,
-							currentTab,
-							setCurrentTab,
-							setOverwriteOpen,
-							setOverwritePaths,
-							overwriteCb
-						)
-					}
-					onCreate={(args) => {
-						onCreate(args, openDirectory, tree.current, treeData, setTreeData);
+							openDirectory
+						);
+
+						const doMove = async () => {
+							setTreeData(newTree);
+
+							await Promise.all(
+								nodeInfo.map((info) => {
+									return renameFile(info.id, info.newId);
+								})
+							);
+
+							updateTabs(
+								renameMap,
+								openDirectory,
+								tabs,
+								setTabs,
+								currentTab,
+								setCurrentTab
+							);
+						};
+
+						const overwritePaths = nodeInfo
+							.filter((i) => i.exists)
+							.map((i) => i.newId);
+
+						if (overwritePaths.length) {
+							overwriteCb.current = doMove;
+							setOverwritePaths(overwritePaths);
+							setOverwriteOpen(true);
+						} else {
+							await doMove();
+						}
 					}}
 					width={treeWidth}
 					height={treeHeight}
