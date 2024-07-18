@@ -51,10 +51,7 @@ function TopBar({ menuItems, children }) {
 			className="flex bg-iris-100 flex-row gap-6 items-center h-14 w-full px-2 border-b-[1px] border-iris-200"
 		>
 			<MenuTrigger>
-				<Button
-					className="round-button w-12 h-12"
-					aria-label="Iris Studio menu"
-				>
+				<Button className="round-button" aria-label="Iris Studio menu">
 					<img
 						src={irisLogo}
 						alt="Iris logo"

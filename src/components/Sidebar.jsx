@@ -160,7 +160,10 @@ function Node({ tree, node, style, dragHandle }) {
 							}
 							autoFocus
 						>
-							<Input ref={renameRef} />
+							<Input
+								className="react-aria-Input outline-none"
+								ref={renameRef}
+							/>
 						</TextField>
 					</div>
 				) : (
