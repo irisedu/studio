@@ -21,6 +21,10 @@ import {
 import { Tree } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { setOpenDirectory } from '$state/appSlice.js';
+import { openTab, changeTab, setTabs } from '$state/tabsSlice.js';
+
 import { ROOT_ID, DirectoryTree, filterFileOp } from './DirectoryTree.js';
 import DeleteDialog from '$components/DeleteDialog.jsx';
 import OverwriteDialog from '$components/OverwriteDialog.jsx';
@@ -31,7 +35,7 @@ import Folder from '~icons/tabler/folder-filled';
 import ChevronDown from '~icons/tabler/chevron-down';
 import ChevronRight from '~icons/tabler/chevron-right';
 
-async function openProject(setOpenDirectory) {
+async function openProject(dispatch) {
 	const selected = await openDialog({
 		directory: true,
 		multiple: false,
@@ -40,39 +44,41 @@ async function openProject(setOpenDirectory) {
 	});
 
 	if (selected) {
-		setOpenDirectory(selected);
+		dispatch(setOpenDirectory(selected));
 	}
 }
 
-function updateTabs(
-	renameMap,
-	openDirectory,
-	tabs,
-	setTabs,
-	currentTab,
-	setCurrentTab
-) {
-	setTabs(
-		tabs.map((tab) => {
-			if (!tab.id.startsWith(FILE_PREFIX)) return tab;
+function updateTabs(renameMap, openDirectory, dispatch, tabs, currentTab) {
+	dispatch(
+		setTabs(
+			tabs.map((tab) => {
+				if (!tab.id.startsWith(FILE_PREFIX)) return tab;
 
-			const tabFile = tab.id.substr(FILE_PREFIX.length);
+				const tabFile = tab.id.substr(FILE_PREFIX.length);
 
-			if (renameMap[tabFile]) {
-				return makeTab(openDirectory, renameMap[tabFile]);
-			}
+				// Moved
+				if (renameMap[tabFile]) {
+					return makeTab(openDirectory, renameMap[tabFile]);
+				}
 
-			return tab;
-		})
+				// Overwritten
+				if (
+					Object.entries(renameMap).some(([, target]) => target === tabFile)
+				) {
+					return makeTab(openDirectory, tabFile);
+				}
+
+				return tab;
+			})
+		)
 	);
 
 	if (!currentTab.startsWith(FILE_PREFIX)) return;
 
 	const currentTabFile = currentTab.slice(FILE_PREFIX.length);
 	if (renameMap[currentTabFile])
-		setTimeout(
-			() => setCurrentTab(FILE_PREFIX + renameMap[currentTabFile]),
-			40
+		setTimeout(() =>
+			dispatch(changeTab(FILE_PREFIX + renameMap[currentTabFile]))
 		);
 }
 
@@ -115,7 +121,9 @@ function Node({ tree, node, style, dragHandle }) {
 					if (e.shiftKey) return;
 
 					if (node.isLeaf && e.detail === 2) {
-						tree.props.openTab(makeTab(tree.props.openDirectory, node.id));
+						tree.props.dispatch(
+							openTab(makeTab(tree.props.openDirectory, node.id))
+						);
 						return;
 					}
 
@@ -208,15 +216,12 @@ function Node({ tree, node, style, dragHandle }) {
 	);
 }
 
-function Sidebar({
-	openDirectory,
-	setOpenDirectory,
-	tabs,
-	setTabs,
-	openTab,
-	currentTab,
-	setCurrentTab
-}) {
+function Sidebar() {
+	const dispatch = useDispatch();
+	const openDirectory = useSelector((state) => state.app.openDirectory);
+	const tabs = useSelector((state) => state.tabs.tabs);
+	const currentTab = useSelector((state) => state.tabs.currentTab);
+
 	const [dirDisplay, setDirDisplay] = useState(null);
 	const tree = useRef();
 	const {
@@ -247,8 +252,10 @@ function Sidebar({
 				})
 			);
 
-			setTabs(
-				tabs.filter((t) => !nodes.some((n) => t.id === FILE_PREFIX + n.id))
+			dispatch(
+				setTabs(
+					tabs.filter((t) => !nodes.some((n) => t.id === FILE_PREFIX + n.id))
+				)
 			);
 		};
 
@@ -346,7 +353,7 @@ function Sidebar({
 						<MenuItem onAction={() => openDirectory && reloadDir()}>
 							Refresh
 						</MenuItem>
-						<MenuItem onAction={() => openProject(setOpenDirectory)}>
+						<MenuItem onAction={() => openProject(dispatch)}>
 							Open project
 						</MenuItem>
 					</Menu>
@@ -410,14 +417,7 @@ function Sidebar({
 							await createDir(immediateParentId, { recursive: true });
 							await renameFile(oldId, newId);
 
-							updateTabs(
-								renameMap,
-								openDirectory,
-								tabs,
-								setTabs,
-								currentTab,
-								setCurrentTab
-							);
+							updateTabs(renameMap, openDirectory, dispatch, tabs, currentTab);
 						};
 
 						if (fileExists) {
@@ -443,14 +443,7 @@ function Sidebar({
 								})
 							);
 
-							updateTabs(
-								renameMap,
-								openDirectory,
-								tabs,
-								setTabs,
-								currentTab,
-								setCurrentTab
-							);
+							updateTabs(renameMap, openDirectory, dispatch, tabs, currentTab);
 						};
 
 						const overwritePaths = nodeInfo
@@ -471,7 +464,7 @@ function Sidebar({
 					openByDefault={false}
 					ref={tree}
 					openDirectory={openDirectory}
-					openTab={openTab}
+					dispatch={dispatch}
 				>
 					{Node}
 				</Tree>

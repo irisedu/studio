@@ -3,7 +3,9 @@ import { Button, MenuTrigger, Popover, Menu } from 'react-aria-components';
 import irisLogo from '$assets/iris-mono.svg';
 import { appWindow } from '@tauri-apps/api/window';
 import { platform } from '@tauri-apps/api/os';
-import useStorage from '$hooks/useStorage.js';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { setDarkTheme } from '$state/appSlice.js';
 
 import X from '~icons/tabler/x';
 import ArrowsDiagonal from '~icons/tabler/arrows-diagonal';
@@ -11,20 +13,13 @@ import Sun from '~icons/tabler/sun-filled';
 import Moon from '~icons/tabler/moon-filled';
 
 function DarkToggle() {
-	const [dark, setDark] = useStorage(localStorage, 'dark', false, JSON.parse);
-
-	useEffect(() => {
-		if (dark) {
-			document.documentElement.classList.add('dark');
-		} else {
-			document.documentElement.classList.remove('dark');
-		}
-	}, [dark]);
+	const dispatch = useDispatch();
+	const dark = useSelector((state) => state.app.darkTheme);
 
 	return (
 		<Button
 			className="round-button"
-			onPress={() => setDark(!dark)}
+			onPress={() => dispatch(setDarkTheme(!dark))}
 			aria-label="Toggle dark mode"
 		>
 			{dark ? (
