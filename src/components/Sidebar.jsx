@@ -150,6 +150,7 @@ function Node({ tree, node, style, dragHandle }) {
 							aria-label="Rename"
 							onFocusChange={(focused) => {
 								if (focused) {
+									node.select();
 									setRenameText(node.data.name);
 									setTimeout(() => renameRef.current.select());
 								} else {

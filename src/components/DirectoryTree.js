@@ -162,10 +162,6 @@ export class DirectoryTree {
 			});
 		}
 
-		setTimeout(() => {
-			this.#tree.select(newNode.id);
-		}, 20);
-
 		return { newTree: this.#copy(newTree), newNode };
 	}
 
