@@ -43,15 +43,30 @@ export function pathIcon(path) {
 	return <File className={className} />;
 }
 
-export function makeTab(openDirectory, path) {
+export function makeTabData(openDirectory, path) {
 	return {
 		id: FILE_PREFIX + path,
-		title: path.slice(openDirectory.length + 1),
+		type: 'file',
+		generation: 0,
+		path,
+		fileName: path.slice(openDirectory.length + 1)
+	};
+}
+
+export function makeTab(data) {
+	return {
+		id: data.id,
+		generation: data.generation,
+		title: data.fileName,
 		getView() {
-			return <p>File editor: {path}</p>;
+			return (
+				<p>
+					File editor: {data.path} {data.generation}
+				</p>
+			);
 		},
 		getIcon() {
-			return pathIcon(path);
+			return pathIcon(data.path);
 		}
 	};
 }

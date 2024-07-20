@@ -28,7 +28,11 @@ import { openTab, changeTab, setTabs } from '$state/tabsSlice.js';
 import { ROOT_ID, DirectoryTree, filterFileOp } from './DirectoryTree.js';
 import DeleteDialog from '$components/DeleteDialog.jsx';
 import OverwriteDialog from '$components/OverwriteDialog.jsx';
-import { FILE_PREFIX, pathIcon, makeTab } from '$components/tabs/FileTab.jsx';
+import {
+	FILE_PREFIX,
+	pathIcon,
+	makeTabData
+} from '$components/tabs/FileTab.jsx';
 import '$components/Sidebar.css';
 
 import Folder from '~icons/tabler/folder-filled';
@@ -58,14 +62,14 @@ function updateTabs(renameMap, openDirectory, dispatch, tabs, currentTab) {
 
 				// Moved
 				if (renameMap[tabFile]) {
-					return makeTab(openDirectory, renameMap[tabFile]);
+					return makeTabData(openDirectory, renameMap[tabFile]);
 				}
 
 				// Overwritten
 				if (
 					Object.entries(renameMap).some(([, target]) => target === tabFile)
 				) {
-					return makeTab(openDirectory, tabFile);
+					return { ...tab, generation: tab.generation + 1 };
 				}
 
 				return tab;
@@ -122,7 +126,7 @@ function Node({ tree, node, style, dragHandle }) {
 
 					if (node.isLeaf && e.detail === 2) {
 						tree.props.dispatch(
-							openTab(makeTab(tree.props.openDirectory, node.id))
+							openTab(makeTabData(tree.props.openDirectory, node.id))
 						);
 						return;
 					}

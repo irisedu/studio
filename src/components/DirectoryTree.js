@@ -18,7 +18,7 @@ function sortTree(data) {
 
 function modifyTree(data, cb) {
 	return data.map((node) => {
-		const newNode = structuredClone(node);
+		const newNode = { ...node };
 		if (node.children) newNode.children = modifyTree(node.children, cb);
 		cb(newNode);
 
@@ -278,8 +278,7 @@ export class DirectoryTree {
 				const newId = (parentId || openDirectory) + sep + node.data.name;
 				renameMap[id] = newId;
 
-				const newData = structuredClone(node.data);
-				newData.id = newId;
+				const newData = { ...node.data, id: newId };
 				if (node.data.children)
 					newData.children = renameDescendants(
 						node.data.children,

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { setTabs } from './tabsSlice.js';
 
 export const appSlice = createSlice({
 	name: 'app',
@@ -19,3 +20,14 @@ export const appSlice = createSlice({
 export const { setDarkTheme, setOpenDirectory } = appSlice.actions;
 
 export default appSlice.reducer;
+
+export const openDirectoryMiddleware =
+	({ getState, dispatch }) =>
+	(next) =>
+	(action) => {
+		if (setOpenDirectory.match(action)) {
+			dispatch(setTabs(getState().tabs.tabs.filter((t) => t.type !== 'file')));
+		}
+
+		return next(action);
+	};

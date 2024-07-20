@@ -1,20 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { rememberReducer, rememberEnhancer } from 'redux-remember';
 
-import appReducer from './appSlice.js';
-import tabsReducer, { openMiddleware } from './tabsSlice.js';
+import appReducer, { openDirectoryMiddleware } from './appSlice.js';
+import tabsReducer, { openTabMiddleware } from './tabsSlice.js';
 
 export default configureStore({
 	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware({
-			serializableCheck: false
-		}).concat([openMiddleware]),
+		getDefaultMiddleware().concat([openDirectoryMiddleware, openTabMiddleware]),
 	reducer: rememberReducer({
 		app: appReducer,
 		tabs: tabsReducer
 	}),
 	enhancers: (getDefaultEnhancers) =>
 		getDefaultEnhancers().concat([
-			rememberEnhancer(window.localStorage, ['app'])
+			rememberEnhancer(window.localStorage, ['app', 'tabs'])
 		])
 });
