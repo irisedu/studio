@@ -19,7 +19,8 @@ export const tabsSlice = createSlice({
 	name: 'tabs',
 	initialState: {
 		tabs: [welcomeTabData],
-		currentTab: null
+		currentTab: null,
+		tabState: {}
 	},
 	reducers: {
 		openTab(state, action) {
@@ -35,6 +36,7 @@ export const tabsSlice = createSlice({
 			}
 
 			state.tabs = state.tabs.filter((t) => t.id !== tabId);
+			delete state.tabState[tabId];
 		},
 		advanceTab(state, action) {
 			const offset = action.payload;
@@ -46,13 +48,38 @@ export const tabsSlice = createSlice({
 			state.currentTab = action.payload;
 		},
 		setTabs(state, action) {
+			state.tabs
+				.filter(
+					(t1) =>
+						!action.payload.some(
+							(t2) => t1.id === t2.id && t1.generation === t2.generation
+						)
+				)
+				.forEach((tab) => delete state.tabState[tab.id]);
+
 			state.tabs = action.payload;
+		},
+		setTabState(state, action) {
+			if (action.payload.state) {
+				state.tabState[action.payload.id] = {
+					...state.tabState[action.payload.id],
+					...action.payload.state
+				};
+			} else {
+				delete state.tabState[action.payload.id];
+			}
 		}
 	}
 });
 
-export const { openTab, closeTab, advanceTab, changeTab, setTabs } =
-	tabsSlice.actions;
+export const {
+	openTab,
+	closeTab,
+	advanceTab,
+	changeTab,
+	setTabs,
+	setTabState
+} = tabsSlice.actions;
 
 export default tabsSlice.reducer;
 

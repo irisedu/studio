@@ -95,7 +95,7 @@ body {
 			@apply inline-flex items-center transition-none px-4 py-1.5 my-0.5 rounded-md;
 
 			.roundout-tabs__close {
-				@apply rounded-full p-0.5 transition-opacity duration-100;
+				@apply rounded-full p-0.5 transition-opacity duration-100 w-4 h-4;
 
 				&[data-hovered] {
 					@apply text-white bg-iris-700;
