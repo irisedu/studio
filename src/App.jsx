@@ -145,7 +145,7 @@ function App() {
 							{(tab) => (
 								<Tab>
 									<span className="flex flex-row gap-2">
-										{tab.getIcon()}
+										{tab.icon}
 										{tab.title}
 										<Button
 											className={`roundout-tabs__close${tabState[tab.id] && tabState[tab.id].modified ? ' opacity-100' : ''}`}
@@ -184,7 +184,7 @@ function App() {
 						<Collection items={tabs}>
 							{(item) => (
 								<TabPanel className="react-aria-TabPanel h-full">
-									{item.getView()}
+									{item.view}
 								</TabPanel>
 							)}
 						</Collection>

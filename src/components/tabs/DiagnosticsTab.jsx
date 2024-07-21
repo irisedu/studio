@@ -68,10 +68,6 @@ export const data = { id: 'studio-diagnostics', type: 'normal' };
 export const tab = {
 	id: data.id,
 	title: 'Diagnostics',
-	getView() {
-		return <DiagnosticsTab />;
-	},
-	getIcon() {
-		return <Bug className="text-iris-500 w-5 h-5" />;
-	}
+	icon: <Bug className="text-iris-500 w-5 h-5" />,
+	view: <DiagnosticsTab />
 };

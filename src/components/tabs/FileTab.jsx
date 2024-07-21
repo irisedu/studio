@@ -182,11 +182,7 @@ export function makeTab(data) {
 		id: data.id,
 		generation: data.generation,
 		title: data.fileName,
-		getView() {
-			return makeFileEditor(data);
-		},
-		getIcon() {
-			return pathIcon(data.path);
-		}
+		icon: pathIcon(data.path),
+		view: makeFileEditor(data)
 	};
 }

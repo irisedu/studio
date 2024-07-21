@@ -22,16 +22,12 @@ export const data = { id: 'studio-welcome', type: 'normal' };
 export const tab = {
 	id: data.id,
 	title: 'Welcome',
-	getView() {
-		return <WelcomeTab />;
-	},
-	getIcon() {
-		return (
-			<img
-				src={irisLogo}
-				alt="Iris logo"
-				className="w-6 h-6 brightness-75 dark:brightness-150"
-			/>
-		);
-	}
+	icon: (
+		<img
+			src={irisLogo}
+			alt="Iris logo"
+			className="w-6 h-6 brightness-75 dark:brightness-150"
+		/>
+	),
+	view: <WelcomeTab />
 };
