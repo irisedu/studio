@@ -36,7 +36,6 @@ export const tabsSlice = createSlice({
 			}
 
 			state.tabs = state.tabs.filter((t) => t.id !== tabId);
-			delete state.tabState[tabId];
 		},
 		advanceTab(state, action) {
 			const offset = action.payload;
@@ -68,6 +67,11 @@ export const tabsSlice = createSlice({
 			} else {
 				delete state.tabState[action.payload.id];
 			}
+		},
+		cleanTabState(state) {
+			for (const [id] of Object.entries(state.tabState)) {
+				if (!state.tabs.some((t) => t.id === id)) delete state.tabState[id];
+			}
 		}
 	}
 });
@@ -78,17 +82,21 @@ export const {
 	advanceTab,
 	changeTab,
 	setTabs,
-	setTabState
+	setTabState,
+	cleanTabState
 } = tabsSlice.actions;
 
 export default tabsSlice.reducer;
 
-export const openTabMiddleware =
+export const tabMiddleware =
 	({ dispatch }) =>
 	(next) =>
 	(action) => {
 		if (openTab.match(action)) {
 			setTimeout(() => dispatch(changeTab(action.payload.id)));
+		} else if (closeTab.match(action) || setTabs.match(action)) {
+			// Must wait for unmount
+			setTimeout(() => dispatch(cleanTabState()));
 		}
 
 		return next(action);

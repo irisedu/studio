@@ -50,7 +50,7 @@ function CodeMirrorEditor({ tabData }) {
 		if (currState.prevState) {
 			setInitialState({ json: currState.prevState });
 			setInitialValue(currState.prevState.doc);
-		} else if (!currState.modified) {
+		} else {
 			readTextFile(tabData.path).then((contents) => {
 				setInitialValue(contents);
 			});
