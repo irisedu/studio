@@ -1,6 +1,3 @@
-import { readDir, exists } from '@tauri-apps/api/fs';
-import { sep } from '@tauri-apps/api/path';
-
 /* UTILITY */
 
 export const ROOT_ID = '__REACT_ARBORIST_INTERNAL_ROOT__';
@@ -85,7 +82,7 @@ export class DirectoryTree {
 	}
 
 	async readFromDir(dir) {
-		const entries = await readDir(dir, { recursive: true });
+		const entries = await fs.readDir(dir);
 
 		function dirToTree(entries) {
 			const out = [];
@@ -136,14 +133,14 @@ export class DirectoryTree {
 		// Determine file name
 		let fileName = baseFileName;
 		let fileNum = 1;
-		while (this.#tree.get(baseDirectory + sep + fileName)) {
+		while (this.#tree.get(baseDirectory + os.sep + fileName)) {
 			fileName = `${baseFileName}-${fileNum}`;
 			fileNum++;
 		}
 
 		// Create node
 		const newNode = {
-			id: baseDirectory + sep + fileName,
+			id: baseDirectory + os.sep + fileName,
 			name: fileName,
 			isFolder
 		};
@@ -192,9 +189,9 @@ export class DirectoryTree {
 		const renameMap = {};
 
 		// Allow renaming with slashes for subdirectories
-		const split = name.split(sep);
+		const split = name.split(os.sep);
 		split.forEach((part, i) => {
-			const partId = prevId + sep + part;
+			const partId = prevId + os.sep + part;
 			prevId = partId;
 
 			const isFolder = i !== split.length - 1 || origNode.data.isFolder;
@@ -233,7 +230,7 @@ export class DirectoryTree {
 			prevNode = newNode;
 		});
 
-		const fileExists = await exists(newId);
+		const fileExists = await fs.exists(newId);
 
 		// Remove the original node from the tree
 		let newTree = filterTree(this.#data, (c) => c.id !== id);
@@ -275,7 +272,7 @@ export class DirectoryTree {
 		const nodeInfo = await Promise.all(
 			nodes.map((node) => {
 				const id = node.id;
-				const newId = (parentId || openDirectory) + sep + node.data.name;
+				const newId = (parentId || openDirectory) + os.sep + node.data.name;
 				renameMap[id] = newId;
 
 				const newData = { ...node.data, id: newId };
@@ -287,7 +284,7 @@ export class DirectoryTree {
 						renameMap
 					);
 
-				return exists(newId).then((res) => ({
+				return fs.exists(newId).then((res) => ({
 					id,
 					newId,
 					data: newData,

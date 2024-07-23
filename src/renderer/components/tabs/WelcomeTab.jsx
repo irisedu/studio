@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { getVersion } from '@tauri-apps/api/app';
 import Iris from '$assets/iris-word.svg?react';
 import irisLogo from '$assets/iris-mono.svg';
 
@@ -7,7 +6,7 @@ function WelcomeTab() {
 	const [version, setVersion] = useState('...');
 
 	useEffect(() => {
-		getVersion().then(setVersion);
+		app.getVersion().then(setVersion);
 	}, []);
 
 	return (

@@ -1,8 +1,5 @@
-import { useState, useEffect } from 'react';
 import { Button, MenuTrigger, Popover, Menu } from 'react-aria-components';
 import irisLogo from '$assets/iris-mono.svg';
-import { appWindow } from '@tauri-apps/api/window';
-import { platform } from '@tauri-apps/api/os';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setDarkTheme } from '$state/appSlice.js';
@@ -32,19 +29,8 @@ function DarkToggle() {
 }
 
 function TopBar({ menuItems, children }) {
-	const [showDeco, setShowDeco] = useState(false);
-
-	useEffect(() => {
-		platform().then((plat) => {
-			setShowDeco(plat !== 'darwin');
-		});
-	}, []);
-
 	return (
-		<div
-			data-tauri-drag-region
-			className="flex bg-iris-100 flex-row gap-6 items-center h-14 w-full px-2 border-b-[1px] border-iris-200"
-		>
+		<div className="flex bg-iris-100 flex-row gap-6 items-center h-14 w-full px-2 border-b-[1px] border-iris-200 drag-region">
 			<MenuTrigger>
 				<Button className="round-button" aria-label="Iris Studio menu">
 					<img
@@ -63,11 +49,11 @@ function TopBar({ menuItems, children }) {
 
 			<DarkToggle />
 
-			{showDeco && (
+			{os.platform !== 'darwin' && (
 				<div className="flex flex-row gap-1">
 					<Button
 						className="round-button"
-						onPress={() => appWindow.minimize()}
+						onPress={() => win.minimize()}
 						aria-label="Minimize"
 					>
 						<div className="border-iris-400 w-4 h-4 m-auto border-b-2" />
@@ -75,7 +61,7 @@ function TopBar({ menuItems, children }) {
 
 					<Button
 						className="round-button"
-						onPress={() => appWindow.toggleMaximize()}
+						onPress={() => win.toggleMaximize()}
 						aria-label="Maximize"
 					>
 						<ArrowsDiagonal className="text-iris-400 w-6 h-6 m-auto" />
@@ -83,7 +69,7 @@ function TopBar({ menuItems, children }) {
 
 					<Button
 						className="round-button"
-						onPress={() => appWindow.close()}
+						onPress={() => win.close()}
 						aria-label="Close"
 					>
 						<X className="text-iris-400 w-6 h-6 m-auto" />

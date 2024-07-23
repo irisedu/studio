@@ -9,15 +9,6 @@ import {
 	TextField,
 	Input
 } from 'react-aria-components';
-import { open as openDialog } from '@tauri-apps/api/dialog';
-import { homeDir, basename } from '@tauri-apps/api/path';
-import {
-	renameFile,
-	removeFile,
-	removeDir,
-	createDir,
-	writeFile
-} from '@tauri-apps/api/fs';
 import { Tree } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
 
@@ -40,15 +31,14 @@ import ChevronDown from '~icons/tabler/chevron-down';
 import ChevronRight from '~icons/tabler/chevron-right';
 
 async function openProject(dispatch) {
-	const selected = await openDialog({
-		directory: true,
-		multiple: false,
+	const selected = await win.openDialog({
 		title: 'Open Project',
-		defaultPath: await homeDir()
+		properties: ['openDirectory', 'createDirectory'],
+		defaultPath: os.homedir
 	});
 
 	if (selected) {
-		dispatch(setOpenDirectory(selected));
+		dispatch(setOpenDirectory(selected[0]));
 	}
 }
 
@@ -227,7 +217,6 @@ function Sidebar() {
 	const tabs = useSelector((state) => state.tabs.tabs);
 	const currentTab = useSelector((state) => state.tabs.currentTab);
 
-	const [dirDisplay, setDirDisplay] = useState(null);
 	const tree = useRef();
 	const {
 		ref: resizeRef,
@@ -251,9 +240,7 @@ function Sidebar() {
 
 			Promise.all(
 				nodes.map((n) => {
-					return n.data.isFolder
-						? removeDir(n.id, { recursive: true })
-						: removeFile(n.id);
+					return fs.rm(n.id);
 				})
 			);
 
@@ -277,7 +264,6 @@ function Sidebar() {
 	useEffect(() => {
 		if (!openDirectory) return;
 
-		basename(openDirectory).then(setDirDisplay);
 		reloadDir();
 	}, [reloadDir, openDirectory]);
 
@@ -347,7 +333,9 @@ function Sidebar() {
 				<Button className="sidebar__button flex flex-row items-center gap-2">
 					<Folder className="text-iris-500 w-5 h-5" />
 					<span className="whitespace-nowrap overflow-hidden text-ellipsis">
-						{dirDisplay || '<no open project>'}
+						{openDirectory
+							? openDirectory.split(os.sep).at(-1)
+							: '<no open project>'}
 					</span>
 					<div className="grow" />
 					<ChevronDown className="text-iris-500 w-5 h-5" />
@@ -395,9 +383,9 @@ function Sidebar() {
 						setTreeData(newTree);
 
 						if (newNode.isFolder) {
-							await createDir(newNode.id);
+							await fs.mkdir(newNode.id);
 						} else {
-							await writeFile(newNode.id, '');
+							await fs.writeTextFile({ file: newNode.id, data: '' });
 						}
 
 						return newNode;
@@ -419,8 +407,8 @@ function Sidebar() {
 							setTreeData(newTree);
 							setTimeout(() => tree.current.select(newId), 20);
 
-							await createDir(immediateParentId, { recursive: true });
-							await renameFile(oldId, newId);
+							await fs.mkdir(immediateParentId);
+							await fs.rename({ from: oldId, to: newId });
 
 							updateTabs(renameMap, openDirectory, dispatch, tabs, currentTab);
 						};
@@ -444,7 +432,7 @@ function Sidebar() {
 
 							await Promise.all(
 								nodeInfo.map((info) => {
-									return renameFile(info.id, info.newId);
+									return fs.rename({ from: info.id, to: info.newId });
 								})
 							);
 

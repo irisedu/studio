@@ -16,7 +16,6 @@ import {
 	Collection
 } from 'react-aria-components';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
-import { appWindow } from '@tauri-apps/api/window';
 
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -44,7 +43,7 @@ function MenuItems() {
 				Show diagnostics
 			</MenuItem>
 			<Separator />
-			<MenuItem onAction={() => appWindow.close()}>Quit</MenuItem>
+			<MenuItem onAction={() => win.close()}>Quit</MenuItem>
 		</>
 	);
 }
@@ -136,7 +135,6 @@ function App() {
 				<TopBar menuItems={<MenuItems />}>
 					<div className="flex flex-row gap-6 items-center grow overflow-x-scroll pb-32 -mb-32 px-2 no-scrollbar">
 						<TabList
-							data-tauri-drag-region
 							aria-label="Main tabs"
 							className="react-aria-TabList pt-2 grow"
 							items={tabs}

@@ -5,7 +5,6 @@ import { hyperLink } from '@uiw/codemirror-extensions-hyper-link';
 import { githubDark, githubLight } from '@uiw/codemirror-theme-github';
 import { LanguageDescription } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
-import { readTextFile, writeTextFile } from '@tauri-apps/api/fs';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setTabState } from '$state/tabsSlice.js';
@@ -51,7 +50,7 @@ function CodeMirrorEditor({ tabData }) {
 			setInitialState({ json: currState.prevState });
 			setInitialValue(currState.prevState.doc);
 		} else {
-			readTextFile(tabData.path).then((contents) => {
+			fs.readTextFile(tabData.path).then((contents) => {
 				setInitialValue(contents);
 			});
 		}
@@ -72,7 +71,10 @@ function CodeMirrorEditor({ tabData }) {
 			if (!e.ctrlKey || e.repeat) return;
 
 			if (e.key === 's') {
-				writeTextFile(tabData.path, editor.current.state.doc.toString());
+				fs.writeTextFile({
+					file: tabData.path,
+					data: editor.current.state.doc.toString()
+				});
 				dispatch(setTabState({ id: tabData.id, state: null }));
 
 				if (autosaveTimeout.current) clearTimeout(autosaveTimeout.current);

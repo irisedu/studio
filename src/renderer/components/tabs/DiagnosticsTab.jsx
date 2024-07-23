@@ -1,25 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-aria-components';
-import { getVersion, getTauriVersion } from '@tauri-apps/api/app';
-import { open } from '@tauri-apps/api/shell';
-import { arch, platform, version as getOsVersion } from '@tauri-apps/api/os';
 
 import Bug from '~icons/tabler/bug';
 
 function DiagnosticsTab() {
-	const [
-		[version, tauriVersion, architecture, platformName, osVersion],
-		setData
-	] = useState(Array(5).fill('...'));
+	const [version, setVersion] = useState('...');
 
 	useEffect(() => {
-		Promise.all([
-			getVersion(),
-			getTauriVersion(),
-			arch(),
-			platform(),
-			getOsVersion()
-		]).then(setData);
+		app.getVersion().then(setVersion);
 	}, []);
 
 	return (
@@ -28,7 +16,7 @@ function DiagnosticsTab() {
 			<p>
 				Contact the Iris maintainers at{' '}
 				<Link
-					onPress={() => open('mailto:contact@seki.pw')}
+					onPress={() => window.open('mailto:contact@seki.pw')}
 					className="react-aria-Link external"
 					target="_blank"
 				>
@@ -36,7 +24,7 @@ function DiagnosticsTab() {
 				</Link>{' '}
 				or report an issue on{' '}
 				<Link
-					onPress={() => open('https://github.com/irisedu/iris-studio')}
+					onPress={() => window.open('https://github.com/irisedu/studio')}
 					className="react-aria-Link external"
 					target="_blank"
 				>
@@ -49,15 +37,18 @@ function DiagnosticsTab() {
 				<dt>Version</dt>
 				<dd>{version}</dd>
 
-				<dt>Tauri Version</dt>
-				<dd>{tauriVersion}</dd>
+				<dt>Electron Version</dt>
+				<dd>{process.versions.electron}</dd>
+
+				<dt>Chrome Version</dt>
+				<dd>{process.versions.chrome}</dd>
 
 				<dt>Architecture</dt>
-				<dd>{architecture}</dd>
+				<dd>{process.arch}</dd>
 
 				<dt>Platform</dt>
 				<dd>
-					{platformName} {osVersion}
+					{os.platform} {os.release}
 				</dd>
 			</dl>
 		</div>

@@ -1,20 +1,19 @@
 { pkgs ? import <nixpkgs> {} }:
 
-pkgs.mkShell {
-  nativeBuildInputs = with pkgs; [
-    pkg-config
-    nodejs_22
-    nodejs_22.pkgs.pnpm
-  ];
-
-  buildInputs = with pkgs; [
-    libsoup
-    librsvg
-    webkitgtk
-  ];
-
-  # https://github.com/tauri-apps/tauri-docs/issues/1560
-  shellHook = ''
-    export XDG_DATA_DIRS=${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}:$XDG_DATA_DIRS
-  '';
-}
+# https://discourse.nixos.org/t/electron-7-development-environment/5002/3
+(pkgs.buildFHSUserEnv {
+  name = "electron-env";
+  targetPkgs = pkgs: (with pkgs;
+    [
+      nodejs_22 pnpm libcxx systemd libpulseaudio libdrm mesa stdenv.cc.cc
+      alsa-lib atk at-spi2-atk at-spi2-core cairo cups dbus expat fontconfig
+      freetype gdk-pixbuf glib gtk3 libnotify libuuid nspr nss pango
+      libappindicator-gtk3 libdbusmenu libxkbcommon zlib
+    ]
+  ) ++ (with pkgs.xorg;
+    [
+      libXScrnSaver libXrender libXcursor libXdamage libXext libXfixes libXi
+      libXrandr libX11 libXcomposite libxshmfence libXtst libxcb
+    ]
+  );
+}).env

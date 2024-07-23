@@ -31,6 +31,8 @@ body {
 .round-button {
 	@apply w-10 h-10 rounded-full;
 
+	-webkit-app-region: no-drag;
+
 	&[data-hovered],
 	&[data-selected] {
 		@apply bg-iris-200;
@@ -50,6 +52,8 @@ body {
 
 	.react-aria-Tab {
 		@apply relative cursor-pointer font-sans text-lg text-black outline-none border-transparent border-[1px] whitespace-nowrap;
+
+		-webkit-app-region: no-drag;
 
 		&[data-focus-visible] span {
 			@apply outline outline-2 outline-iris-500 -outline-offset-2;
@@ -132,5 +136,10 @@ body {
 		&::-webkit-scrollbar {
 			display: none;
 		}
+	}
+
+	.drag-region {
+		-webkit-user-select: none;
+		-webkit-app-region: drag;
 	}
 }
