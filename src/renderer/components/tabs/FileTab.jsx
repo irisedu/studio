@@ -1,4 +1,4 @@
-import CodeMirrorEditor from './editors/CodeMirrorEditor.jsx';
+import CodeMirrorEditor from '$components/editors/CodeMirrorEditor.jsx';
 
 import File from '~icons/tabler/file-filled';
 import TXT from '~icons/tabler/file-type-txt';
