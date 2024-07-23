@@ -47,23 +47,29 @@ export const tabsSlice = createSlice({
 			state.currentTab = action.payload;
 		},
 		setTabs(state, action) {
-			state.tabs
-				.filter(
-					(t1) =>
-						!action.payload.some(
-							(t2) => t1.id === t2.id && t1.generation === t2.generation
-						)
-				)
-				.forEach((tab) => delete state.tabState[tab.id]);
-
 			state.tabs = action.payload;
 		},
 		setTabState(state, action) {
+			const existingState = state.tabState[action.payload.id];
+			if (
+				existingState &&
+				action.payload.generation < existingState.__generation
+			)
+				return;
+
 			if (action.payload.state) {
-				state.tabState[action.payload.id] = {
-					...state.tabState[action.payload.id],
-					...action.payload.state
-				};
+				if (action.payload.overwrite) {
+					state.tabState[action.payload.id] = {
+						...action.payload.state,
+						__generation: action.payload.generation || 0
+					};
+				} else {
+					state.tabState[action.payload.id] = {
+						...state.tabState[action.payload.id],
+						...action.payload.state,
+						__generation: action.payload.generation
+					};
+				}
 			} else {
 				delete state.tabState[action.payload.id];
 			}

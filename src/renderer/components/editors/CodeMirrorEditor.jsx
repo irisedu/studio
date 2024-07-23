@@ -37,7 +37,8 @@ function CodeMirrorEditor({ tabData }) {
 				id: tabData.id,
 				state: {
 					prevState: editor.current.state.toJSON()
-				}
+				},
+				generation: tabData.generation
 			})
 		);
 	}
@@ -75,7 +76,13 @@ function CodeMirrorEditor({ tabData }) {
 					file: tabData.path,
 					data: editor.current.state.doc.toString()
 				});
-				dispatch(setTabState({ id: tabData.id, state: null }));
+				dispatch(
+					setTabState({
+						id: tabData.id,
+						state: null,
+						generation: tabData.generation
+					})
+				);
 
 				if (autosaveTimeout.current) clearTimeout(autosaveTimeout.current);
 			}
@@ -84,7 +91,7 @@ function CodeMirrorEditor({ tabData }) {
 		document.addEventListener('keydown', onKeyDown);
 
 		return () => document.removeEventListener('keydown', onKeyDown);
-	}, [dispatch, tabData.id, tabData.path]);
+	}, [dispatch, tabData.id, tabData.path, tabData.generation]);
 
 	return (
 		<CodeMirror
@@ -105,7 +112,8 @@ function CodeMirrorEditor({ tabData }) {
 					dispatch(
 						setTabState({
 							id: tabData.id,
-							state: { modified: true }
+							state: { modified: true },
+							generation: tabData.generation
 						})
 					);
 				}
@@ -115,6 +123,9 @@ function CodeMirrorEditor({ tabData }) {
 				autosaveTimeout.current = setTimeout(() => {
 					autosave();
 				}, 5000);
+			}}
+			onUpdate={(viewUpdate) => {
+				if (viewUpdate.focusChanged && !viewUpdate.view.hasFocus) autosave();
 			}}
 		/>
 	);

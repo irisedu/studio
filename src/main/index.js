@@ -9,6 +9,7 @@ import {
 } from 'electron';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import icon from '../../public/icon.png?asset';
 
 function readDirRecursive(dir) {
@@ -98,8 +99,21 @@ function createWindow() {
 		return fs.promises.rm(file, { force: true, recursive: true });
 	});
 
-	ipcMain.handle('fs:rename', (_, args) => {
-		return fs.promises.rename(args.from, args.to);
+	ipcMain.handle('fs:rename', async (_, args) => {
+		// Rename, overwrite directories, allow child to overwrite parent
+		const tmp = await fs.promises.mkdtemp(
+			path.join(os.tmpdir(), 'iris-studio-')
+		);
+
+		const tmpDest = path.join(tmp, path.basename(args.from));
+
+		await fs.promises.cp(args.from, tmpDest, { recursive: true });
+		await fs.promises.rm(args.from, { force: true, recursive: true });
+
+		await fs.promises.rm(args.to, { force: true, recursive: true });
+
+		await fs.promises.cp(tmpDest, args.to, { recursive: true });
+		await fs.promises.rm(tmp, { force: true, recursive: true });
 	});
 
 	ipcMain.handle('fs:mkdir', (_, dir) => {

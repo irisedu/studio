@@ -46,14 +46,16 @@ export function pathIcon(path) {
 }
 
 function makeFileEditor(tabData) {
-	return <CodeMirrorEditor tabData={tabData} />;
+	const key = `${tabData.id}-${tabData.generation || 0}`;
+
+	return <CodeMirrorEditor tabData={tabData} key={key} />;
 }
 
-export function makeTabData(openDirectory, path) {
+export function makeTabData(openDirectory, path, generation) {
 	return {
 		id: FILE_PREFIX + path,
 		type: 'file',
-		generation: 0,
+		generation: generation || 0,
 		path,
 		fileName: path.slice(openDirectory.length + 1)
 	};

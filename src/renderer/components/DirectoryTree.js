@@ -125,7 +125,7 @@ export class DirectoryTree {
 
 	/* EVENTS */
 
-	onCreate({ parentId, type }, openDirectory) {
+	async onCreate({ parentId, type }, openDirectory) {
 		const isFolder = type === 'internal';
 		const baseFileName = isFolder ? 'new-folder' : 'new-file';
 		const baseDirectory = parentId || openDirectory;
@@ -133,7 +133,7 @@ export class DirectoryTree {
 		// Determine file name
 		let fileName = baseFileName;
 		let fileNum = 1;
-		while (this.#tree.get(baseDirectory + os.sep + fileName)) {
+		while (await fs.exists(baseDirectory + os.sep + fileName)) {
 			fileName = `${baseFileName}-${fileNum}`;
 			fileNum++;
 		}
@@ -190,7 +190,8 @@ export class DirectoryTree {
 
 		// Allow renaming with slashes for subdirectories
 		const split = name.split(os.sep);
-		split.forEach((part, i) => {
+		for (let i = 0; i < split.length; i++) {
+			const part = split[i];
 			const partId = prevId + os.sep + part;
 			prevId = partId;
 
@@ -203,7 +204,7 @@ export class DirectoryTree {
 			}
 
 			// Part of the subtree might already exist
-			if (this.#tree.get(partId)) {
+			if (await fs.exists(partId)) {
 				if (isFolder) insertParentId = partId;
 				return;
 			}
@@ -228,7 +229,7 @@ export class DirectoryTree {
 			if (!newSubtree) newSubtree = newNode;
 			if (prevNode) prevNode.children.push(newNode);
 			prevNode = newNode;
-		});
+		}
 
 		const fileExists = await fs.exists(newId);
 

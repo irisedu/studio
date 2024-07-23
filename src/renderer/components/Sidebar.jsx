@@ -14,7 +14,7 @@ import useResizeObserver from 'use-resize-observer';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setOpenDirectory } from '$state/appSlice.js';
-import { openTab, changeTab, setTabs } from '$state/tabsSlice.js';
+import { openTab, changeTab, setTabs, setTabState } from '$state/tabsSlice.js';
 
 import { ROOT_ID, DirectoryTree, filterFileOp } from './DirectoryTree.js';
 import DeleteDialog from '$components/DeleteDialog.jsx';
@@ -42,30 +42,74 @@ async function openProject(dispatch) {
 	}
 }
 
-function updateTabs(renameMap, openDirectory, dispatch, tabs, currentTab) {
-	dispatch(
-		setTabs(
-			tabs.map((tab) => {
-				if (!tab.id.startsWith(FILE_PREFIX)) return tab;
+function updateTabs(
+	renameMap,
+	openDirectory,
+	dispatch,
+	tabs,
+	tabState,
+	currentTab
+) {
+	const newTabs = [];
 
-				const tabFile = tab.id.substr(FILE_PREFIX.length);
+	for (const tab of tabs) {
+		if (!tab.id.startsWith(FILE_PREFIX)) {
+			newTabs.push(tab);
+			continue;
+		}
 
-				// Moved
-				if (renameMap[tabFile]) {
-					return makeTabData(openDirectory, renameMap[tabFile]);
-				}
+		// (1) This tab has been renamed
+		// Preserve its state and change its path
+		const dest = renameMap[tab.path];
+		if (dest) {
+			let generation = 0;
 
-				// Overwritten
-				if (
-					Object.entries(renameMap).some(([, target]) => target === tabFile)
-				) {
-					return { ...tab, generation: tab.generation + 1 };
-				}
+			// If destination tab already exists, it will be deleted and
+			// replaced with this one. The generation must be incremented for
+			// the tab to be updated.
+			const destTab = tabs.find((t) => t.id === FILE_PREFIX + dest);
+			if (destTab) generation = destTab.generation + 1;
 
-				return tab;
-			})
-		)
-	);
+			newTabs.push(makeTabData(openDirectory, dest, generation));
+
+			dispatch(
+				setTabState({
+					id: FILE_PREFIX + dest,
+					state: tabState[tab.id],
+					overwrite: true,
+					generation
+				})
+			);
+
+			continue;
+		}
+
+		// (2) The file of this tab has been overwritten
+		// Update the tab ONLY IF its origin tab does not exist
+		// Otherwise, close the tab
+		const entry = Object.entries(renameMap).find(
+			([, target]) => target === tab.path
+		);
+		if (entry) {
+			if (tabs.some((t) => t.id === FILE_PREFIX + entry[0])) continue;
+
+			newTabs.push({ ...tab, generation: tab.generation + 1 });
+
+			dispatch(
+				setTabState({
+					id: tab.id,
+					state: null,
+					generation: tab.generation + 1
+				})
+			);
+
+			continue;
+		}
+
+		newTabs.push(tab);
+	}
+
+	dispatch(setTabs(newTabs));
 
 	if (!currentTab.startsWith(FILE_PREFIX)) return;
 
@@ -216,6 +260,7 @@ function Sidebar() {
 	const openDirectory = useSelector((state) => state.app.openDirectory);
 	const tabs = useSelector((state) => state.tabs.tabs);
 	const currentTab = useSelector((state) => state.tabs.currentTab);
+	const tabState = useSelector((state) => state.tabs.tabState);
 
 	const tree = useRef();
 	const {
@@ -379,7 +424,10 @@ function Sidebar() {
 					disableEdit={false}
 					disableDrop={(args) => treeData.disableDrop(args)}
 					onCreate={async (args) => {
-						const { newTree, newNode } = treeData.onCreate(args, openDirectory);
+						const { newTree, newNode } = await treeData.onCreate(
+							args,
+							openDirectory
+						);
 						setTreeData(newTree);
 
 						if (newNode.isFolder) {
@@ -410,7 +458,14 @@ function Sidebar() {
 							await fs.mkdir(immediateParentId);
 							await fs.rename({ from: oldId, to: newId });
 
-							updateTabs(renameMap, openDirectory, dispatch, tabs, currentTab);
+							updateTabs(
+								renameMap,
+								openDirectory,
+								dispatch,
+								tabs,
+								tabState,
+								currentTab
+							);
 						};
 
 						if (fileExists) {
@@ -436,7 +491,14 @@ function Sidebar() {
 								})
 							);
 
-							updateTabs(renameMap, openDirectory, dispatch, tabs, currentTab);
+							updateTabs(
+								renameMap,
+								openDirectory,
+								dispatch,
+								tabs,
+								tabState,
+								currentTab
+							);
 						};
 
 						const overwritePaths = nodeInfo
