@@ -172,6 +172,7 @@ function Node({ tree, node, style, dragHandle }) {
 
 					node.toggle();
 				}}
+				onContextMenu={() => node.select()}
 			>
 				{node.data.isFolder ? (
 					<Folder className="text-iris-500 w-5 h-5" />
@@ -354,15 +355,41 @@ function Sidebar() {
 					</MenuItem>
 
 					{tree.current && tree.current.selectedNodes.length > 0 && (
-						<MenuItem
-							onAction={() => {
-								promptDelete();
-								setContextOpen(false);
-							}}
-						>
-							Delete selected
-						</MenuItem>
+						<>
+							<MenuItem
+								onAction={() => {
+									promptDelete();
+									setContextOpen(false);
+								}}
+							>
+								Delete selected
+							</MenuItem>
+
+							<MenuItem
+								onAction={() => {
+									shell.showItemInFolder(tree.current.selectedNodes[0].id);
+									setContextOpen(false);
+								}}
+							>
+								Show in file explorer
+							</MenuItem>
+						</>
 					)}
+
+					<MenuItem
+						onAction={() => {
+							const target =
+								tree.current && tree.current.selectedNodes.length > 0
+									? tree.current.selectedNodes[0].id
+									: openDirectory;
+
+							shell.openPath(target);
+							setContextOpen(false);
+						}}
+					>
+						Open in external app
+					</MenuItem>
+
 					<MenuItem
 						onAction={() => {
 							openDirectory && reloadDir();

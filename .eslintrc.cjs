@@ -13,7 +13,8 @@ module.exports = {
 		win: true,
 		os: true,
 		app: true,
-		fs: true
+		fs: true,
+		shell: true
 	},
 	ignorePatterns: ['dist', '.eslintrc.cjs'],
 	parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },

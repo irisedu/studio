@@ -34,3 +34,8 @@ contextBridge.exposeInMainWorld('fs', {
 	exists: (args) => ipcRenderer.invoke('fs:exists', args),
 	readDir: (args) => ipcRenderer.invoke('fs:readDir', args)
 });
+
+contextBridge.exposeInMainWorld('shell', {
+	openPath: (args) => ipcRenderer.invoke('shell:openPath', args),
+	showItemInFolder: (args) => ipcRenderer.invoke('shell:showItemInFolder', args)
+});

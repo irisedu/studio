@@ -141,6 +141,14 @@ function createWindow() {
 		return readDirRecursive(args);
 	});
 
+	ipcMain.handle('shell:openPath', (_, args) => {
+		return shell.openPath(args);
+	});
+
+	ipcMain.handle('shell:showItemInFolder', (_, args) => {
+		return shell.showItemInFolder(args);
+	});
+
 	if (process.env['ELECTRON_RENDERER_URL']) {
 		mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
 	} else {
