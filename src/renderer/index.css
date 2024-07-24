@@ -43,6 +43,12 @@ body {
 	}
 }
 
+.flex-no-shrink {
+	* {
+		@apply shrink-0;
+	}
+}
+
 .roundout-tabs {
 	@apply h-full;
 

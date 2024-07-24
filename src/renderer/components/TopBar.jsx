@@ -30,7 +30,7 @@ function DarkToggle() {
 
 function TopBar({ menuItems, children }) {
 	return (
-		<div className="flex bg-iris-100 flex-row gap-6 items-center h-14 w-full px-2 border-b-[1px] border-iris-200 drag-region">
+		<div className="flex bg-iris-100 flex-row gap-6 items-center h-14 w-full px-2 border-b-[1px] border-iris-200 drag-region flex-no-shrink">
 			<MenuTrigger>
 				<Button className="round-button" aria-label="Iris Studio menu">
 					<img

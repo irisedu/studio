@@ -133,48 +133,46 @@ function App() {
 				onSelectionChange={(selection) => dispatch(changeTab(selection))}
 			>
 				<TopBar menuItems={<MenuItems />}>
-					<div className="flex flex-row gap-6 items-center grow overflow-x-scroll pb-32 -mb-32 px-2 no-scrollbar">
-						<TabList
-							aria-label="Main tabs"
-							className="react-aria-TabList pt-2 grow"
-							items={tabs}
-							dependencies={[tabState]}
-						>
-							{(tab) => (
-								<Tab>
-									<span className="flex flex-row gap-2">
-										{tab.icon}
-										{tab.title}
-										<Button
-											className={`roundout-tabs__close${tabState[tab.id] && tabState[tab.id].modified ? ' opacity-100' : ''}`}
-											aria-label="Close tab"
-											excludeFromTabOrder
-											onPress={() => tryCloseTab(tab.id)}
-										>
-											{tabState[tab.id] && tabState[tab.id].modified ? (
-												<Asterisk className="w-3 h-3" />
-											) : (
-												<X className="w-3 h-3" />
-											)}
-										</Button>
-									</span>
-								</Tab>
-							)}
-						</TabList>
+					<TabList
+						aria-label="Main tabs"
+						className="react-aria-TabList h-14 pt-2 grow shrink overflow-x-scroll px-2 no-scrollbar"
+						items={tabs}
+						dependencies={[tabState]}
+					>
+						{(tab) => (
+							<Tab>
+								<span className="flex flex-row gap-2">
+									{tab.icon}
+									{tab.title}
+									<Button
+										className={`roundout-tabs__close${tabState[tab.id] && tabState[tab.id].modified ? ' opacity-100' : ''}`}
+										aria-label="Close tab"
+										excludeFromTabOrder
+										onPress={() => tryCloseTab(tab.id)}
+									>
+										{tabState[tab.id] && tabState[tab.id].modified ? (
+											<Asterisk className="w-3 h-3" />
+										) : (
+											<X className="w-3 h-3" />
+										)}
+									</Button>
+								</span>
+							</Tab>
+						)}
+					</TabList>
 
-						<ToggleButton
-							className="round-button"
-							aria-label="Toggle sidebar"
-							isSelected={sidebarOpen}
-							onChange={setSidebarOpen}
-						>
-							{sidebarOpen ? (
-								<SidebarRightFilled className="text-iris-400 w-6 h-6 m-auto" />
-							) : (
-								<SidebarRight className="text-iris-400 w-6 h-6 m-auto" />
-							)}
-						</ToggleButton>
-					</div>
+					<ToggleButton
+						className="round-button"
+						aria-label="Toggle sidebar"
+						isSelected={sidebarOpen}
+						onChange={setSidebarOpen}
+					>
+						{sidebarOpen ? (
+							<SidebarRightFilled className="text-iris-400 w-6 h-6 m-auto" />
+						) : (
+							<SidebarRight className="text-iris-400 w-6 h-6 m-auto" />
+						)}
+					</ToggleButton>
 				</TopBar>
 
 				<PanelGroup autoSaveId="main" direction="horizontal" className="grow">
