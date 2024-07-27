@@ -133,9 +133,10 @@ function App() {
 				onSelectionChange={(selection) => dispatch(changeTab(selection))}
 			>
 				<TopBar menuItems={<MenuItems />}>
+					{/* Margin/padding allows overflow on y with scroll on x */}
 					<TabList
 						aria-label="Main tabs"
-						className="react-aria-TabList h-14 pt-2 grow shrink overflow-x-scroll px-2 no-scrollbar"
+						className="react-aria-TabList p-[0.35rem] h-[calc(100%-0.35rem)] box-content grow shrink overflow-x-scroll pb-32 -mb-32 px-2 no-scrollbar"
 						items={tabs}
 						dependencies={[tabState]}
 					>

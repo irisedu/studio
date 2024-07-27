@@ -542,7 +542,7 @@ function Sidebar() {
 					}}
 					width={treeWidth}
 					height={treeHeight}
-					rowHeight={34}
+					rowHeight={42}
 					openByDefault={false}
 					ref={tree}
 					openDirectory={openDirectory}

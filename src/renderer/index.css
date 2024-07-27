@@ -22,6 +22,8 @@
 
 :root {
 	@apply scroll-smooth font-serif;
+
+	font-size: 20px;
 }
 
 body {
@@ -53,52 +55,40 @@ body {
 	@apply h-full;
 
 	.react-aria-TabList {
-		@apply flex flex-row h-full gap-2;
+		@apply flex flex-row gap-2;
 	}
 
 	.react-aria-Tab {
-		@apply relative cursor-pointer font-sans text-lg text-black outline-none border-transparent border-[1px] whitespace-nowrap;
+		@apply relative cursor-pointer font-sans text-lg text-black outline-none border-transparent border-2 whitespace-nowrap;
 
 		-webkit-app-region: no-drag;
 
 		&[data-focus-visible] span {
-			@apply outline outline-2 outline-iris-500 -outline-offset-2;
+			@apply outline outline-2 outline-iris-500 -outline-offset-[0.25rem];
 		}
 
 		&[data-selected] {
-			@apply bg-iris-50 rounded-tl-[8px] rounded-tr-[8px] border-iris-200 border-b-0;
-			box-shadow: 0 2px rgb(250, 250, 250);
+			@apply bg-iris-50 rounded-tl-[0.5rem] rounded-tr-[0.5rem] border-iris-200 border-b-0;
 
 			/* https://css-tricks.com/tabs-with-round-out-borders/ */
-			span::before,
-			&::after {
-				@apply absolute content-[''] w-[8px] h-[8px] bg-iris-100 -bottom-[0.75px] border-b-[1px] border-iris-200;
-			}
-
+			/* &::before, &::after: roundout borders */
 			&::before,
-			span::after {
-				@apply absolute content-[''] w-2 h-2 -bottom-[1px] bg-iris-50;
-			}
-
-			span::before {
-				@apply rounded-br-full -left-[8px] border-r-[1px];
+			&::after {
+				@apply absolute content-[''] w-[0.5rem] h-[0.5rem] bg-iris-100 -bottom-[2px] border-b-2 border-iris-200 z-10;
 			}
 
 			&::before {
-				@apply -left-2;
-			}
-
-			span::after {
-				@apply -right-2;
+				@apply rounded-br-full -left-[0.5rem] border-r-2;
 			}
 
 			&::after {
-				@apply rounded-bl-full -right-[8px] border-l-[1px];
+				@apply rounded-bl-full -right-[0.5rem] border-l-2;
 			}
-		}
 
-		.dark &[data-selected] {
-			box-shadow: 0 2px rgb(24, 24, 27);
+			/* span::after: cover bottom and sharp corner borders */
+			span::after {
+				@apply absolute content-[''] -left-[0.5rem] -right-[0.5rem] h-3 -bottom-1.5 bg-iris-50;
+			}
 		}
 
 		span {

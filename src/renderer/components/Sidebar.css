@@ -1,5 +1,5 @@
 .sidebar__button {
-	@apply text-left w-full p-1 rounded-md border-[1px] border-iris-200;
+	@apply text-left w-full p-1 rounded-md border-2 border-iris-200;
 
 	&[data-hovered],
 	&[data-selected] {
