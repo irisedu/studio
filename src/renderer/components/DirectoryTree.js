@@ -125,16 +125,16 @@ export class DirectoryTree {
 
 	/* EVENTS */
 
-	async onCreate({ parentId, type }, openDirectory) {
+	async onCreate({ parentId, type }, openDirectory, extension) {
 		const isFolder = type === 'internal';
 		const baseFileName = isFolder ? 'new-folder' : 'new-file';
 		const baseDirectory = parentId || openDirectory;
 
 		// Determine file name
-		let fileName = baseFileName;
+		let fileName = baseFileName + extension;
 		let fileNum = 1;
 		while (await fs.exists(baseDirectory + os.sep + fileName)) {
-			fileName = `${baseFileName}-${fileNum}`;
+			fileName = `${baseFileName}-${fileNum}${extension}`;
 			fileNum++;
 		}
 

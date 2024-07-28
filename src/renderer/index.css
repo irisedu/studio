@@ -123,6 +123,18 @@ body {
 	}
 }
 
+*::-webkit-scrollbar {
+	@apply w-4 cursor-default;
+}
+
+*::-webkit-scrollbar-thumb {
+	@apply cursor-default rounded-full bg-iris-200 bg-clip-padding border-4 border-solid border-transparent;
+
+	&:active {
+		@apply bg-iris-300;
+	}
+}
+
 @layer utilities {
 	.no-scrollbar {
 		/* https://dev.to/derick1530/how-to-create-scrollable-element-in-tailwind-without-a-scrollbar-4mbd */

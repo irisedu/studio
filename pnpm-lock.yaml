@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@codemirror/commands':
+        specifier: ^6.6.0
+        version: 6.6.0
       '@codemirror/language':
         specifier: ^6.10.2
         version: 6.10.2
@@ -26,6 +29,9 @@ importers:
       '@iconify-json/tabler':
         specifier: ^1.1.118
         version: 1.1.118
+      '@nytimes/react-prosemirror':
+        specifier: ^0.6.1
+        version: 0.6.1(prosemirror-model@1.22.2)(prosemirror-state@1.4.3)(prosemirror-view@1.33.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@reduxjs/toolkit':
         specifier: ^2.2.6
         version: 2.2.6(react-redux@9.1.2(react@18.3.1)(redux@5.0.1))(react@18.3.1)
@@ -98,6 +104,27 @@ importers:
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
+      prosemirror-commands:
+        specifier: ^1.6.0
+        version: 1.6.0
+      prosemirror-history:
+        specifier: ^1.4.1
+        version: 1.4.1
+      prosemirror-inputrules:
+        specifier: ^1.4.0
+        version: 1.4.0
+      prosemirror-keymap:
+        specifier: ^1.2.2
+        version: 1.2.2
+      prosemirror-model:
+        specifier: ^1.22.2
+        version: 1.22.2
+      prosemirror-state:
+        specifier: ^1.4.3
+        version: 1.4.3
+      prosemirror-view:
+        specifier: ^1.33.9
+        version: 1.33.9
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -661,6 +688,7 @@ packages:
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
     engines: {node: '>=10.10.0'}
+    deprecated: Use @eslint/config-array instead
 
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
@@ -668,6 +696,7 @@ packages:
 
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
+    deprecated: Use @eslint/object-schema instead
 
   '@iconify-json/tabler@1.1.118':
     resolution: {integrity: sha512-nDOjYG75BlagOe4e+V3K4qVFujdPOeYzi6ZB3sYz0xbdIkpSF/4YvKGdLDr4tmkwGUTV8fhlHVfMpRoDoBnnnA==}
@@ -789,6 +818,16 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@nytimes/react-prosemirror@0.6.1':
+    resolution: {integrity: sha512-L3Z/tZCk1BrYozgZLAuJmH5WVoitVR3Q0PIZcnAgY9AurfbQpzX4J9WnX7tEY3hciVRVmyg9EANriIsf1wsE6w==}
+    engines: {node: '>=16.9'}
+    peerDependencies:
+      prosemirror-model: ^1.0.0
+      prosemirror-state: ^1.0.0
+      prosemirror-view: ^1.0.0
+      react: '>=17'
+      react-dom: '>=17'
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -3114,6 +3153,9 @@ packages:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
 
+  orderedmap@2.1.1:
+    resolution: {integrity: sha512-TvAWxi0nDe1j/rtMcWcIj94+Ffe6n7zhow33h40SKxmsmozs6dz/e+EajymfoFcHd7sxNn8yHM8839uixMOV6g==}
+
   p-cancelable@2.1.1:
     resolution: {integrity: sha512-BZOr3nRQHOntUjTrH8+Lh54smKHoHyur8We1V8DSMVrl5A2malOOwuJRnKRDjSnkoeBh4at6BwEnb5I7Jl31wg==}
     engines: {node: '>=8'}
@@ -3255,6 +3297,30 @@ packages:
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
+
+  prosemirror-commands@1.6.0:
+    resolution: {integrity: sha512-xn1U/g36OqXn2tn5nGmvnnimAj/g1pUx2ypJJIe8WkVX83WyJVC5LTARaxZa2AtQRwntu9Jc5zXs9gL9svp/mg==}
+
+  prosemirror-history@1.4.1:
+    resolution: {integrity: sha512-2JZD8z2JviJrboD9cPuX/Sv/1ChFng+xh2tChQ2X4bB2HeK+rra/bmJ3xGntCcjhOqIzSDG6Id7e8RJ9QPXLEQ==}
+
+  prosemirror-inputrules@1.4.0:
+    resolution: {integrity: sha512-6ygpPRuTJ2lcOXs9JkefieMst63wVJBgHZGl5QOytN7oSZs3Co/BYbc3Yx9zm9H37Bxw8kVzCnDsihsVsL4yEg==}
+
+  prosemirror-keymap@1.2.2:
+    resolution: {integrity: sha512-EAlXoksqC6Vbocqc0GtzCruZEzYgrn+iiGnNjsJsH4mrnIGex4qbLdWWNza3AW5W36ZRrlBID0eM6bdKH4OStQ==}
+
+  prosemirror-model@1.22.2:
+    resolution: {integrity: sha512-I4lS7HHIW47D0Xv/gWmi4iUWcQIDYaJKd8Hk4+lcSps+553FlQrhmxtItpEvTr75iAruhzVShVp6WUwsT6Boww==}
+
+  prosemirror-state@1.4.3:
+    resolution: {integrity: sha512-goFKORVbvPuAQaXhpbemJFRKJ2aixr+AZMGiquiqKxaucC6hlpHNZHWgz5R7dS4roHiwq9vDctE//CZ++o0W1Q==}
+
+  prosemirror-transform@1.9.0:
+    resolution: {integrity: sha512-5UXkr1LIRx3jmpXXNKDhv8OyAOeLTGuXNwdVfg8x27uASna/wQkr9p6fD3eupGOi4PLJfbezxTyi/7fSJypXHg==}
+
+  prosemirror-view@1.33.9:
+    resolution: {integrity: sha512-xV1A0Vz9cIcEnwmMhKKFAOkfIp8XmJRnaZoPqNXrPS7EK5n11Ov8V76KhR0RsfQd/SIzmWY+bg+M44A2Lx/Nnw==}
 
   pump@3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
@@ -3471,6 +3537,9 @@ packages:
     resolution: {integrity: sha512-Elx2UT8lzxxOXMpy5HWQGZqkrQOtrVDDa/bm9l10+U4rQnVzbL/LgZ4NOM1MPIDyHk69W4InuYDF5dzRh4Kw1A==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
+
+  rope-sequence@1.3.4:
+    resolution: {integrity: sha512-UT5EDe2cu2E/6O4igUr5PSFs23nvvukicWHx6GnOPlHAiiYbzNuCRQCuiUdHJQcqKalLKlrYJnjY0ySGsXNQXQ==}
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -4886,6 +4955,14 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
+
+  '@nytimes/react-prosemirror@0.6.1(prosemirror-model@1.22.2)(prosemirror-state@1.4.3)(prosemirror-view@1.33.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      prosemirror-model: 1.22.2
+      prosemirror-state: 1.4.3
+      prosemirror-view: 1.33.9
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -7900,6 +7977,8 @@ snapshots:
       type-check: 0.4.0
       word-wrap: 1.2.5
 
+  orderedmap@2.1.1: {}
+
   p-cancelable@2.1.1: {}
 
   p-limit@3.1.0:
@@ -8019,6 +8098,49 @@ snapshots:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
+
+  prosemirror-commands@1.6.0:
+    dependencies:
+      prosemirror-model: 1.22.2
+      prosemirror-state: 1.4.3
+      prosemirror-transform: 1.9.0
+
+  prosemirror-history@1.4.1:
+    dependencies:
+      prosemirror-state: 1.4.3
+      prosemirror-transform: 1.9.0
+      prosemirror-view: 1.33.9
+      rope-sequence: 1.3.4
+
+  prosemirror-inputrules@1.4.0:
+    dependencies:
+      prosemirror-state: 1.4.3
+      prosemirror-transform: 1.9.0
+
+  prosemirror-keymap@1.2.2:
+    dependencies:
+      prosemirror-state: 1.4.3
+      w3c-keyname: 2.2.8
+
+  prosemirror-model@1.22.2:
+    dependencies:
+      orderedmap: 2.1.1
+
+  prosemirror-state@1.4.3:
+    dependencies:
+      prosemirror-model: 1.22.2
+      prosemirror-transform: 1.9.0
+      prosemirror-view: 1.33.9
+
+  prosemirror-transform@1.9.0:
+    dependencies:
+      prosemirror-model: 1.22.2
+
+  prosemirror-view@1.33.9:
+    dependencies:
+      prosemirror-model: 1.22.2
+      prosemirror-state: 1.4.3
+      prosemirror-transform: 1.9.0
 
   pump@3.0.0:
     dependencies:
@@ -8348,6 +8470,8 @@ snapshots:
       '@rollup/rollup-win32-ia32-msvc': 4.18.1
       '@rollup/rollup-win32-x64-msvc': 4.18.1
       fsevents: 2.3.3
+
+  rope-sequence@1.3.4: {}
 
   run-parallel@1.2.0:
     dependencies:

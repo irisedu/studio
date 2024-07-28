@@ -1,4 +1,5 @@
 import CodeMirrorEditor from '$components/editors/CodeMirrorEditor.jsx';
+import ProseMirrorEditor from '$components/editors/ProseMirrorEditor.jsx';
 
 import File from '~icons/tabler/file-filled';
 import TXT from '~icons/tabler/file-type-txt';
@@ -12,6 +13,8 @@ import TeX from '~icons/tabler/tex';
 import SVG from '~icons/tabler/file-type-svg';
 import JPG from '~icons/tabler/file-type-jpg';
 import PNG from '~icons/tabler/file-type-png';
+
+import irisLogo from '$assets/iris-mono.svg';
 
 export const FILE_PREFIX = 'file-';
 
@@ -40,6 +43,14 @@ export function pathIcon(path) {
 		return <JPG className={className} />;
 	} else if (path.endsWith('.png')) {
 		return <PNG className={className} />;
+	} else if (path.endsWith('.iris')) {
+		return (
+			<img
+				src={irisLogo}
+				alt="Iris logo"
+				className="w-6 h-6 brightness-75 dark:brightness-150"
+			/>
+		);
 	}
 
 	return <File className={className} />;
@@ -47,6 +58,10 @@ export function pathIcon(path) {
 
 function makeFileEditor(tabData) {
 	const key = `${tabData.id}-${tabData.generation || 0}`;
+
+	if (tabData.path.endsWith('.iris')) {
+		return <ProseMirrorEditor tabData={tabData} key={key} />;
+	}
 
 	return <CodeMirrorEditor tabData={tabData} key={key} />;
 }

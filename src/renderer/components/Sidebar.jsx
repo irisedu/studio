@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
 	Button,
 	MenuTrigger,
+	SubmenuTrigger,
 	Popover,
 	Menu,
 	MenuItem,
@@ -307,6 +308,8 @@ function Sidebar() {
 	const [contextOpen, setContextOpen] = useState(false);
 	const contextTarget = useRef();
 
+	const createExtension = useRef('');
+
 	useEffect(() => {
 		if (!openDirectory) return;
 
@@ -330,76 +333,77 @@ function Sidebar() {
 			/>
 
 			<div ref={contextTarget} className="fixed" />
-			<Popover
-				placement="bottom left"
-				isOpen={contextOpen}
-				onOpenChange={setContextOpen}
-				triggerRef={contextTarget}
-			>
-				<Menu aria-label="File tree menu">
-					<MenuItem
-						onAction={() => {
-							treeCreate(tree.current, 'leaf');
-							setContextOpen(false);
-						}}
-					>
-						New file
-					</MenuItem>
-					<MenuItem
-						onAction={() => {
-							treeCreate(tree.current, 'internal');
-							setContextOpen(false);
-						}}
-					>
-						New folder
-					</MenuItem>
 
-					{tree.current && tree.current.selectedNodes.length > 0 && (
-						<>
-							<MenuItem
-								onAction={() => {
-									promptDelete();
-									setContextOpen(false);
-								}}
-							>
-								Delete selected
+			<MenuTrigger isOpen={contextOpen} onOpenChange={setContextOpen}>
+				<Popover placement="bottom left" triggerRef={contextTarget}>
+					<Menu aria-label="File tree menu">
+						<SubmenuTrigger>
+							<MenuItem className="react-aria-MenuItem flex flex-row items-center">
+								Create new <ChevronRight className="w-4 h-4 ml-auto" />
 							</MenuItem>
+							<Popover>
+								<Menu aria-label="Create menu">
+									<MenuItem
+										onAction={() => {
+											createExtension.current = '.iris';
+											treeCreate(tree.current, 'leaf');
+										}}
+									>
+										Iris document
+									</MenuItem>
+									<MenuItem
+										onAction={() => {
+											createExtension.current = '';
+											treeCreate(tree.current, 'internal');
+										}}
+									>
+										Folder
+									</MenuItem>
+									<MenuItem
+										onAction={() => {
+											createExtension.current = '';
+											treeCreate(tree.current, 'leaf');
+										}}
+									>
+										Empty file
+									</MenuItem>
+								</Menu>
+							</Popover>
+						</SubmenuTrigger>
 
-							<MenuItem
-								onAction={() => {
-									shell.showItemInFolder(tree.current.selectedNodes[0].id);
-									setContextOpen(false);
-								}}
-							>
-								Show in file explorer
-							</MenuItem>
-						</>
-					)}
+						{tree.current && tree.current.selectedNodes.length > 0 && (
+							<>
+								<MenuItem onAction={promptDelete}>Delete selected</MenuItem>
 
-					<MenuItem
-						onAction={() => {
-							const target =
-								tree.current && tree.current.selectedNodes.length > 0
-									? tree.current.selectedNodes[0].id
-									: openDirectory;
+								<MenuItem
+									onAction={() =>
+										shell.showItemInFolder(tree.current.selectedNodes[0].id)
+									}
+								>
+									Show in file explorer
+								</MenuItem>
+							</>
+						)}
 
-							shell.openPath(target);
-							setContextOpen(false);
-						}}
-					>
-						Open in external app
-					</MenuItem>
+						<MenuItem
+							onAction={() => {
+								const target =
+									tree.current && tree.current.selectedNodes.length > 0
+										? tree.current.selectedNodes[0].id
+										: openDirectory;
 
-					<MenuItem
-						onAction={() => {
-							openDirectory && reloadDir();
-							setContextOpen(false);
-						}}
-					>
-						Refresh
-					</MenuItem>
-				</Menu>
-			</Popover>
+								shell.openPath(target);
+							}}
+						>
+							Open in external app
+						</MenuItem>
+
+						<MenuItem onAction={() => openDirectory && reloadDir()}>
+							Refresh
+						</MenuItem>
+					</Menu>
+				</Popover>
+			</MenuTrigger>
 
 			<MenuTrigger>
 				<Button className="sidebar__button flex flex-row items-center gap-2">
@@ -438,6 +442,8 @@ function Sidebar() {
 					}
 				}}
 				onContextMenu={(e) => {
+					if (!openDirectory) return;
+
 					const proxy = contextTarget.current;
 					proxy.style.left = `${e.pageX}px`;
 					proxy.style.top = `${e.pageY}px`;
@@ -453,7 +459,8 @@ function Sidebar() {
 					onCreate={async (args) => {
 						const { newTree, newNode } = await treeData.onCreate(
 							args,
-							openDirectory
+							openDirectory,
+							createExtension.current
 						);
 						setTreeData(newTree);
 
