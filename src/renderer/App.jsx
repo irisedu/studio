@@ -120,7 +120,10 @@ function App() {
 	}, [dispatch, currentTab, tryCloseTab]);
 
 	return (
-		<main className={`bg-iris-50 w-screen h-screen`}>
+		<main
+			className={`bg-iris-50 w-screen h-screen`}
+			onContextMenu={(e) => win.contextmenu({ x: e.pageX, y: e.pageY })}
+		>
 			<CloseDialog
 				isOpen={closeOpen}
 				setIsOpen={setCloseOpen}

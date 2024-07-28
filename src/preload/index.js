@@ -3,6 +3,7 @@ import os from 'os';
 import path from 'path';
 
 contextBridge.exposeInMainWorld('win', {
+	contextmenu: (args) => ipcRenderer.invoke('window:contextmenu', args),
 	close: () => ipcRenderer.send('window:close'),
 	toggleMaximize: () => ipcRenderer.send('window:maximize'),
 	minimize: () => ipcRenderer.send('window:minimize'),

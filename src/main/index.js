@@ -1,16 +1,9 @@
-import {
-	app,
-	shell,
-	BrowserWindow,
-	ipcMain,
-	dialog,
-	Menu,
-	MenuItem
-} from 'electron';
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
 import icon from '../../public/icon.png?asset';
+import menu from './menu.js';
 
 function readDirRecursive(dir) {
 	return fs.readdirSync(dir, { withFileTypes: true }).map((dirent) => {
@@ -39,25 +32,6 @@ function createWindow() {
 		}
 	});
 
-	const menu = new Menu();
-
-	menu.append(
-		new MenuItem({
-			label: 'Inspect Element',
-			accelerator:
-				process.platform === 'darwin' ? 'Cmd+Shift+I' : 'Ctrl+Shift+I',
-			role: 'toggleDevTools'
-		})
-	);
-
-	menu.append(
-		new MenuItem({
-			label: 'Refresh',
-			accelerator: process.platform === 'darwin' ? 'Cmd+R' : 'Ctrl+R',
-			role: 'reload'
-		})
-	);
-
 	mainWindow.setMenu(menu);
 
 	mainWindow.on('ready-to-show', () => {
@@ -67,6 +41,14 @@ function createWindow() {
 	mainWindow.webContents.setWindowOpenHandler((details) => {
 		shell.openExternal(details.url);
 		return { action: 'deny' };
+	});
+
+	ipcMain.handle('window:contextmenu', (e, args) => {
+		menu.popup({
+			window: BrowserWindow.fromWebContents(e.sender),
+			x: args.x,
+			y: args.y
+		});
 	});
 
 	ipcMain.on('window:close', (e) => {
