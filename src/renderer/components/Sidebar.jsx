@@ -146,7 +146,7 @@ function Node({ tree, node, style, dragHandle }) {
 	return (
 		<div style={style} className="cursor-pointer select-none">
 			<div
-				className={`px-2 border-2 border-transparent rounded-md flex flex-row gap-2 items-center${node.isSelected ? ' bg-iris-200' : ''}${node.isFocused ? ' border-iris-400' : ''}`}
+				className={`px-2 border-2 rounded-md flex flex-row gap-2 items-center${node.isSelected ? ' bg-iris-200' : ''}${node.isFocused ? ' border-iris-400' : ' border-transparent'}`}
 				ref={dragHandle}
 				onClick={(e) => {
 					if (e.ctrlKey) {
