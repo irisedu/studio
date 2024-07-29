@@ -49,7 +49,7 @@ function CommandButton({ Icon, command, tooltip, ...props }) {
 	return (
 		<TooltipTrigger delay={300}>
 			<Button className="round-button" onPress={onPress} {...props}>
-				<Icon className="text-iris-500 w-6 h-6 m-auto" />
+				<Icon className="text-iris-500 w-3/5 h-3/5 m-auto" />
 			</Button>
 			<Tooltip placement="bottom">{tooltip}</Tooltip>
 		</TooltipTrigger>
@@ -77,7 +77,7 @@ function ToggleMarkButton({ Icon, markType, tooltip, ...props }) {
 				onChange={onChange}
 				{...props}
 			>
-				<Icon className="text-iris-500 w-6 h-6 m-auto" />
+				<Icon className="text-iris-500 w-3/5 h-3/5 m-auto" />
 			</ToggleButton>
 			<Tooltip placement="bottom">{tooltip}</Tooltip>
 		</TooltipTrigger>
@@ -111,7 +111,7 @@ function HeadingMenu() {
 					aria-label="Heading"
 					isSelected={active}
 				>
-					<Heading className="text-iris-500 w-6 h-6 m-auto" />
+					<Heading className="text-iris-500 w-3/5 h-3/5 m-auto" />
 				</ToggleButton>
 				<Tooltip placement="bottom">Heading</Tooltip>
 			</TooltipTrigger>

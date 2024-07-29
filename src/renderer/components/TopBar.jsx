@@ -20,9 +20,9 @@ function DarkToggle() {
 			aria-label="Toggle dark mode"
 		>
 			{dark ? (
-				<Sun className="text-iris-400 w-6 h-6 m-auto" />
+				<Sun className="text-iris-400 w-3/5 h-3/5 m-auto" />
 			) : (
-				<Moon className="text-iris-400 w-6 h-6 m-auto" />
+				<Moon className="text-iris-400 w-3/5 h-3/5 m-auto" />
 			)}
 		</Button>
 	);
@@ -30,7 +30,7 @@ function DarkToggle() {
 
 function TopBar({ menuItems, children }) {
 	return (
-		<div className="flex bg-iris-100 flex-row gap-6 items-center h-14 w-full px-2 border-b-2 border-iris-200 drag-region flex-no-shrink">
+		<div className="flex bg-iris-100 flex-row gap-4 items-center h-14 w-full px-2 border-b-2 border-iris-200 drag-region flex-no-shrink">
 			<MenuTrigger>
 				<Button className="round-button" aria-label="Iris Studio menu">
 					<img
@@ -56,7 +56,7 @@ function TopBar({ menuItems, children }) {
 						onPress={() => win.minimize()}
 						aria-label="Minimize"
 					>
-						<div className="border-iris-400 w-4 h-4 m-auto border-b-2" />
+						<div className="border-iris-400 w-1/3 h-1/3 m-auto border-b-2" />
 					</Button>
 
 					<Button
@@ -64,7 +64,7 @@ function TopBar({ menuItems, children }) {
 						onPress={() => win.toggleMaximize()}
 						aria-label="Maximize"
 					>
-						<ArrowsDiagonal className="text-iris-400 w-6 h-6 m-auto" />
+						<ArrowsDiagonal className="text-iris-400 w-3/5 h-3/5 m-auto" />
 					</Button>
 
 					<Button
@@ -72,7 +72,7 @@ function TopBar({ menuItems, children }) {
 						onPress={() => win.close()}
 						aria-label="Close"
 					>
-						<X className="text-iris-400 w-6 h-6 m-auto" />
+						<X className="text-iris-400 w-3/5 h-3/5 m-auto" />
 					</Button>
 				</div>
 			)}

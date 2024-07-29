@@ -23,7 +23,7 @@
 :root {
 	@apply scroll-smooth font-serif;
 
-	font-size: 20px;
+	font-size: 24px;
 }
 
 body {
@@ -31,7 +31,7 @@ body {
 }
 
 .round-button {
-	@apply w-10 h-10 rounded-full;
+	@apply w-8 h-8 rounded-full;
 
 	-webkit-app-region: no-drag;
 
@@ -59,7 +59,7 @@ body {
 	}
 
 	.react-aria-Tab {
-		@apply relative cursor-pointer font-sans text-lg text-black outline-none border-transparent border-2 whitespace-nowrap;
+		@apply relative cursor-pointer font-sans text-black outline-none border-transparent border-2 whitespace-nowrap;
 
 		-webkit-app-region: no-drag;
 

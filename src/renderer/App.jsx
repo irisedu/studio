@@ -139,7 +139,7 @@ function App() {
 					{/* Margin/padding allows overflow on y with scroll on x */}
 					<TabList
 						aria-label="Main tabs"
-						className="react-aria-TabList p-[0.35rem] h-[calc(100%-0.35rem)] box-content grow shrink overflow-x-scroll pb-32 -mb-32 px-2 no-scrollbar"
+						className="react-aria-TabList pt-[0.5rem] h-[calc(100%-0.5rem)] box-content grow shrink overflow-x-scroll pb-32 -mb-32 px-2 no-scrollbar"
 						items={tabs}
 						dependencies={[tabState]}
 					>
@@ -172,9 +172,9 @@ function App() {
 						onChange={setSidebarOpen}
 					>
 						{sidebarOpen ? (
-							<SidebarRightFilled className="text-iris-400 w-6 h-6 m-auto" />
+							<SidebarRightFilled className="text-iris-400 w-3/5 h-3/5 m-auto" />
 						) : (
-							<SidebarRight className="text-iris-400 w-6 h-6 m-auto" />
+							<SidebarRight className="text-iris-400 w-3/5 h-3/5 m-auto" />
 						)}
 					</ToggleButton>
 				</TopBar>

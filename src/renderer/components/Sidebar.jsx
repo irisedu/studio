@@ -217,7 +217,7 @@ function Node({ tree, node, style, dragHandle }) {
 					</div>
 				) : (
 					<span
-						className="text-lg overflow-x-hidden whitespace-nowrap text-ellipsis"
+						className="overflow-x-hidden whitespace-nowrap text-ellipsis"
 						onClick={(e) => {
 							if (e.ctrlKey || e.shiftKey) return;
 
@@ -317,7 +317,7 @@ function Sidebar() {
 	}, [reloadDir, openDirectory]);
 
 	return (
-		<div className="font-sans text-lg w-full h-full p-2">
+		<div className="font-sans w-full h-full p-2">
 			<DeleteDialog
 				isOpen={deleteOpen}
 				setIsOpen={setDeleteOpen}
@@ -550,7 +550,7 @@ function Sidebar() {
 					}}
 					width={treeWidth}
 					height={treeHeight}
-					rowHeight={42}
+					rowHeight={44}
 					openByDefault={false}
 					ref={tree}
 					openDirectory={openDirectory}
