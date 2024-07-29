@@ -1,4 +1,4 @@
-import { InputRule } from 'prosemirror-inputrules';
+import { InputRule, textblockTypeInputRule } from 'prosemirror-inputrules';
 import { baseSchema, docSchema } from './schema.js';
 
 const smartQuotes = [
@@ -44,19 +44,24 @@ function markRule(delimiter, delimiterLength, markType, opts) {
 	);
 }
 
-function commonFormattingRules(schema) {
+function schemaCommonRules(schema) {
 	return [
 		markRule('/', 1, schema.marks.em, { inCode: true }),
 		markRule('\\*', 1, schema.marks.strong, { inCode: true }),
 		markRule('__', 2, schema.marks.u, { inCode: true }),
 		markRule('~~', 2, schema.marks.s, { inCode: true }),
-		markRule('`', 1, schema.marks.code)
+		markRule('`', 1, schema.marks.code),
+
+		// https://github.com/ProseMirror/prosemirror-example-setup/blob/master/src/inputrules.ts
+		textblockTypeInputRule(/^(#{2,4})\s$/, schema.nodes.heading, (match) => ({
+			level: match[1].length
+		}))
 	];
 }
 
 // https://github.com/ProseMirror/prosemirror-inputrules/blob/master/src/rules.ts
 const _baseRules = [...smartyPants];
 
-export const baseRules = [..._baseRules, ...commonFormattingRules(baseSchema)];
+export const baseRules = [..._baseRules, ...schemaCommonRules(baseSchema)];
 
-export const docRules = [..._baseRules, ...commonFormattingRules(docSchema)];
+export const docRules = [..._baseRules, ...schemaCommonRules(docSchema)];

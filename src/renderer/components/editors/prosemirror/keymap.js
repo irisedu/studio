@@ -17,7 +17,7 @@ import {
 } from 'prosemirror-commands';
 
 import { baseSchema, docSchema } from './schema.js';
-import { insertNbsp } from './commands.js';
+import { insertNbsp, clearFormatting } from './commands.js';
 
 function schemaCommonKeymap(schema) {
 	return {
@@ -28,7 +28,9 @@ function schemaCommonKeymap(schema) {
 		'Mod-u': toggleMark(schema.marks.u),
 		'Alt-Shift-5': toggleMark(schema.marks.s),
 
-		'Mod-`': toggleMark(schema.marks.code)
+		'Mod-`': toggleMark(schema.marks.code),
+
+		'Mod-\\': clearFormatting(schema.nodes.paragraph)
 	};
 }
 

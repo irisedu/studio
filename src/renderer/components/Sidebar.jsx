@@ -450,6 +450,7 @@ function Sidebar() {
 
 					setContextOpen(true);
 					e.preventDefault();
+					e.stopPropagation();
 				}}
 			>
 				<Tree

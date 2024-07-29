@@ -16,6 +16,21 @@ const baseSchemaDef = {
 			parseDOM: [{ tag: 'p' }]
 		},
 
+		heading: {
+			group: 'block',
+			content: 'inline*',
+			attrs: { level: { default: 2, validate: 'number' } },
+			defining: true,
+			toDOM(node) {
+				return ['h' + node.attrs.level, 0];
+			},
+			parseDOM: [
+				{ tag: 'h2', attrs: { level: 2 } },
+				{ tag: 'h3', attrs: { level: 3 } },
+				{ tag: 'h4', attrs: { level: 4 } }
+			]
+		},
+
 		nbsp: {
 			group: 'inline',
 			inline: true,
