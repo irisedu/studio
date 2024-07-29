@@ -94,7 +94,7 @@ importers:
         version: 0.4.8(eslint@8.57.0)
       iris:
         specifier: github:irisedu/iris
-        version: https://codeload.github.com/irisedu/iris/tar.gz/e03379bb2b183ee28168ae61915e6b272e24cf9a
+        version: https://codeload.github.com/irisedu/iris/tar.gz/fc22ea84ea5a2727aae91f6c12eda0940a600eed
       nightwind:
         specifier: ^1.1.13
         version: 1.1.13(tailwindcss@3.4.6)
@@ -1354,8 +1354,8 @@ packages:
       react-redux:
         optional: true
 
-  '@remix-run/router@1.17.1':
-    resolution: {integrity: sha512-mCOMec4BKd6BRGBZeSnGiIgwsbLGp3yhVqAD8H+PxiRNEHgDpZb8J1TnrSDlg97t0ySKMQJTHCWBCmBpSmkF6Q==}
+  '@remix-run/router@1.18.0':
+    resolution: {integrity: sha512-L3jkqmqoSVBVKHfpGZmLrex0lxR5SucGA0sUfFzGctehw+S/ggL9L/0NnC5mw6P8HUWpFZ3nQw3cRApjjWx9Sw==}
     engines: {node: '>=14.0.0'}
 
   '@rollup/pluginutils@5.1.0':
@@ -2605,13 +2605,13 @@ packages:
     resolution: {integrity: sha512-tS7XnJS33Egirm+6cI+Z/kH/aVZt94uxGlJxOZlGql2/yqbAzPg3zHHnTnVN4cVpoJnEYEGq+LE3iXbuUIe8BA==}
     engines: {node: '>=16.0.0'}
 
-  html-dom-parser@5.0.8:
-    resolution: {integrity: sha512-vuWiX9EXgu8CJ5m9EP5c7bvBmNSuQVnrY8tl0z0ZX96Uth1IPlYH/8W8VZ/hBajFf18EN+j2pukbCNd01HEd1w==}
+  html-dom-parser@5.0.9:
+    resolution: {integrity: sha512-QGeoFYwgQ582EDvrBx0+ejIz76/LuQcwwkmSR4ueKncjl2yWbciA45Kfz/LrHvWR3CgtKnxKFkr4Mpq2Sh1QNg==}
 
-  html-react-parser@5.1.10:
-    resolution: {integrity: sha512-gV22PvLij4wdEdtrZbGVC7Zy2OVWnQ0bYhX63S196ZRSx4+K0TuutCreHSXr+saUia8KeKB+2TYziVfijpH4Tw==}
+  html-react-parser@5.1.12:
+    resolution: {integrity: sha512-OPv8fsIvxxv/+pLj9mYvyNu8PE5dPMowTRdd5VHpcoZpXlstp8eYCxQ5rzqAE5Tb75rhdiWUXnPltfb62zCVjg==}
     peerDependencies:
-      '@types/react': 17 || 18
+      '@types/react': 0.14 || 15 || 16 || 17 || 18
       react: 0.14 || 15 || 16 || 17 || 18
     peerDependenciesMeta:
       '@types/react':
@@ -2686,8 +2686,8 @@ packages:
   intl-messageformat@10.5.14:
     resolution: {integrity: sha512-IjC6sI0X7YRjjyVH9aUgdftcmZK7WXdHeil4KwbjDnRWjnVitKpAx3rr6t6di1joFp5188VqKcobOPA6mCLG/w==}
 
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/e03379bb2b183ee28168ae61915e6b272e24cf9a:
-    resolution: {tarball: https://codeload.github.com/irisedu/iris/tar.gz/e03379bb2b183ee28168ae61915e6b272e24cf9a}
+  iris@https://codeload.github.com/irisedu/iris/tar.gz/fc22ea84ea5a2727aae91f6c12eda0940a600eed:
+    resolution: {tarball: https://codeload.github.com/irisedu/iris/tar.gz/fc22ea84ea5a2727aae91f6c12eda0940a600eed}
     version: 0.0.0
 
   is-array-buffer@3.0.4:
@@ -3411,15 +3411,15 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
 
-  react-router-dom@6.24.1:
-    resolution: {integrity: sha512-U19KtXqooqw967Vw0Qcn5cOvrX5Ejo9ORmOtJMzYWtCT4/WOfFLIZGGsVLxcd9UkBO0mSTZtXqhZBsWlHr7+Sg==}
+  react-router-dom@6.25.1:
+    resolution: {integrity: sha512-0tUDpbFvk35iv+N89dWNrJp+afLgd+y4VtorJZuOCXK0kkCWjEvb3vTJM++SYvMEpbVwXKf3FjeVveVEb6JpDQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
 
-  react-router@6.24.1:
-    resolution: {integrity: sha512-PTXFXGK2pyXpHzVo3rR9H7ip4lSPZZc0bHG5CARmj65fTT6qG7sTngmb6lcYu1gf3y/8KxORoy9yn59pGpCnpg==}
+  react-router@6.25.1:
+    resolution: {integrity: sha512-u8ELFr5Z6g02nUtpPAggP73Jigj1mRePSwhS/2nkTrlPU5yEkH1vYzWNyvSnSzeeE2DNqWdH+P8OhIh9wuXhTw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
@@ -5891,7 +5891,7 @@ snapshots:
       react: 18.3.1
       react-redux: 9.1.2(react@18.3.1)(redux@5.0.1)
 
-  '@remix-run/router@1.17.1': {}
+  '@remix-run/router@1.18.0': {}
 
   '@rollup/pluginutils@5.1.0(rollup@4.18.1)':
     dependencies:
@@ -7449,15 +7449,15 @@ snapshots:
 
   hsl-matcher@1.2.4: {}
 
-  html-dom-parser@5.0.8:
+  html-dom-parser@5.0.9:
     dependencies:
       domhandler: 5.0.3
       htmlparser2: 9.1.0
 
-  html-react-parser@5.1.10(react@18.3.1):
+  html-react-parser@5.1.12(react@18.3.1):
     dependencies:
       domhandler: 5.0.3
-      html-dom-parser: 5.0.8
+      html-dom-parser: 5.0.9
       react: 18.3.1
       react-property: 2.0.2
       style-to-js: 1.1.12
@@ -7540,16 +7540,16 @@ snapshots:
       '@formatjs/icu-messageformat-parser': 2.7.8
       tslib: 2.6.2
 
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/e03379bb2b183ee28168ae61915e6b272e24cf9a:
+  iris@https://codeload.github.com/irisedu/iris/tar.gz/fc22ea84ea5a2727aae91f6c12eda0940a600eed:
     dependencies:
       highlight.js: 11.10.0
       highlightjs-line-numbers.js: 2.8.0
-      html-react-parser: 5.1.10(react@18.3.1)
+      html-react-parser: 5.1.12(react@18.3.1)
       react: 18.3.1
       react-aria-components: 1.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
       react-responsive: 10.0.0(react@18.3.1)
-      react-router-dom: 6.24.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router-dom: 6.25.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
 
@@ -8285,16 +8285,16 @@ snapshots:
       react: 18.3.1
       shallow-equal: 3.1.0
 
-  react-router-dom@6.24.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-router-dom@6.25.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@remix-run/router': 1.17.1
+      '@remix-run/router': 1.18.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-router: 6.24.1(react@18.3.1)
+      react-router: 6.25.1(react@18.3.1)
 
-  react-router@6.24.1(react@18.3.1):
+  react-router@6.25.1(react@18.3.1):
     dependencies:
-      '@remix-run/router': 1.17.1
+      '@remix-run/router': 1.18.0
       react: 18.3.1
 
   react-stately@3.31.1(react@18.3.1):

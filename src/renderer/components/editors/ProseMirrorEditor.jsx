@@ -13,7 +13,12 @@ import { inputRules } from 'prosemirror-inputrules';
 import { docSchema } from './prosemirror/schema.js';
 import { docKeymap } from './prosemirror/keymap.js';
 import { docRules } from './prosemirror/inputrules.js';
-import { Button, ToggleButton } from 'react-aria-components';
+import {
+	Button,
+	ToggleButton,
+	TooltipTrigger,
+	Tooltip
+} from 'react-aria-components';
 import { useFileEditor } from './editorUtils.js';
 
 import Undo from '~icons/tabler/arrow-back-up';
@@ -43,7 +48,7 @@ const defaultState = EditorState.create({
 	schema: docSchema
 });
 
-function CommandButton({ Icon, command, ...props }) {
+function CommandButton({ Icon, command, tooltip, ...props }) {
 	const onPress = useEditorEventCallback((view) => {
 		command(view.state, view.dispatch, view);
 
@@ -51,9 +56,12 @@ function CommandButton({ Icon, command, ...props }) {
 	});
 
 	return (
-		<Button className="round-button" onPress={onPress} {...props}>
-			<Icon className="text-iris-500 w-6 h-6 m-auto" />
-		</Button>
+		<TooltipTrigger delay={300}>
+			<Button className="round-button" onPress={onPress} {...props}>
+				<Icon className="text-iris-500 w-6 h-6 m-auto" />
+			</Button>
+			<Tooltip placement="bottom">{tooltip}</Tooltip>
+		</TooltipTrigger>
 	);
 }
 
@@ -65,7 +73,7 @@ function markActive(state, markType) {
 	return state.doc.rangeHasMark(from, to, markType);
 }
 
-function ToggleMarkButton({ Icon, markType, ...props }) {
+function ToggleMarkButton({ Icon, markType, tooltip, ...props }) {
 	const [active, setActive] = useState(false);
 	const onChange = useEditorEventCallback((view, value) => {
 		toggleMark(markType)(view.state, view.dispatch, view);
@@ -79,14 +87,17 @@ function ToggleMarkButton({ Icon, markType, ...props }) {
 	});
 
 	return (
-		<ToggleButton
-			className="round-button"
-			isSelected={active}
-			onChange={onChange}
-			{...props}
-		>
-			<Icon className="text-iris-500 w-6 h-6 m-auto" />
-		</ToggleButton>
+		<TooltipTrigger delay={300}>
+			<ToggleButton
+				className="round-button"
+				isSelected={active}
+				onChange={onChange}
+				{...props}
+			>
+				<Icon className="text-iris-500 w-6 h-6 m-auto" />
+			</ToggleButton>
+			<Tooltip placement="bottom">{tooltip}</Tooltip>
+		</TooltipTrigger>
 	);
 }
 
@@ -145,8 +156,18 @@ function ProseMirrorEditor({ tabData }) {
 				}}
 			>
 				<div className="flex flex-row items-center gap-2 p-2">
-					<CommandButton Icon={Undo} command={undo} aria-label="Undo" />
-					<CommandButton Icon={Redo} command={redo} aria-label="Redo" />
+					<CommandButton
+						Icon={Undo}
+						command={undo}
+						aria-label="Undo"
+						tooltip="Undo"
+					/>
+					<CommandButton
+						Icon={Redo}
+						command={redo}
+						aria-label="Redo"
+						tooltip="Redo"
+					/>
 
 					<div className="w-5" />
 
@@ -154,21 +175,25 @@ function ProseMirrorEditor({ tabData }) {
 						Icon={Bold}
 						markType={docSchema.marks.strong}
 						aria-label="Bold"
+						tooltip="Bold"
 					/>
 					<ToggleMarkButton
 						Icon={Italic}
 						markType={docSchema.marks.em}
 						aria-label="Italic"
+						tooltip="Italic"
 					/>
 					<ToggleMarkButton
 						Icon={Underline}
 						markType={docSchema.marks.u}
 						aria-label="Underline"
+						tooltip="Underline"
 					/>
 					<ToggleMarkButton
 						Icon={Code}
 						markType={docSchema.marks.code}
 						aria-label="Inline code"
+						tooltip="Inline code"
 					/>
 				</div>
 
