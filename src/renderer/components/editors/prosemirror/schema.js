@@ -1,6 +1,7 @@
 import { Schema } from 'prosemirror-model';
 
-// https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.ts
+// Some portions from https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.ts
+// Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT)
 const baseSchemaDef = {
 	nodes: {
 		doc: { content: 'block+' },
@@ -24,7 +25,58 @@ const baseSchemaDef = {
 			parseDOM: [{ tag: 'span.display-nbsp' }]
 		}
 	},
-	marks: {}
+	marks: {
+		em: {
+			toDOM() {
+				return ['em', 0];
+			},
+			parseDOM: [
+				{ tag: 'i' },
+				{ tag: 'em' },
+				{ style: 'font-style=italic' },
+				{ style: 'font-style=normal', clearMark: (m) => m.type.name == 'em' }
+			]
+		},
+		strong: {
+			toDOM() {
+				return ['strong', 0];
+			},
+			parseDOM: [
+				{ tag: 'strong' },
+				// This works around a Google Docs misbehavior where
+				// pasted content will be inexplicably wrapped in `<b>`
+				// tags with a font-weight normal.
+				{
+					tag: 'b',
+					getAttrs: (node) => node.style.fontWeight != 'normal' && null
+				},
+				{ style: 'font-weight=400', clearMark: (m) => m.type.name == 'strong' },
+				{
+					style: 'font-weight',
+					getAttrs: (value) => /^(bold(er)?|[5-9]\d{2,})$/.test(value) && null
+				}
+			]
+		},
+		u: {
+			toDOM() {
+				return ['u', 0];
+			},
+			parseDOM: [{ tag: 'u' }, { style: 'text-decoration=underline' }]
+		},
+		s: {
+			toDOM() {
+				return ['s', 0];
+			},
+			parseDOM: [{ tag: 's' }, { style: 'text-decoration=line-through' }]
+		},
+
+		code: {
+			toDOM() {
+				return ['code', 0];
+			},
+			parseDOM: [{ tag: 'code' }]
+		}
+	}
 };
 
 const docSchemaDef = {

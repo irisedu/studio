@@ -12,11 +12,25 @@ import {
 	selectNodeBackward,
 	selectNodeForward,
 	selectAll,
-	exitCode
+	exitCode,
+	toggleMark
 } from 'prosemirror-commands';
 
 import { baseSchema, docSchema } from './schema.js';
 import { insertNbsp } from './commands.js';
+
+function schemaCommonKeymap(schema) {
+	return {
+		'Mod-Space': insertNbsp(schema.nodes.nbsp),
+
+		'Mod-i': toggleMark(schema.marks.em),
+		'Mod-b': toggleMark(schema.marks.strong),
+		'Mod-u': toggleMark(schema.marks.u),
+		'Alt-Shift-5': toggleMark(schema.marks.s),
+
+		'Mod-`': toggleMark(schema.marks.code)
+	};
+}
 
 // https://github.com/ProseMirror/prosemirror-commands/blob/master/src/commands.ts
 export const baseKeymap = {
@@ -34,11 +48,10 @@ export const baseKeymap = {
 	'Mod-a': selectAll,
 	'Mod-Enter': exitCode,
 
-	'Mod-Space': insertNbsp(baseSchema.nodes.nbsp)
+	...schemaCommonKeymap(baseSchema)
 };
 
 export const docKeymap = {
 	...baseKeymap,
-
-	'Mod-Space': insertNbsp(docSchema.nodes.nbsp)
+	...schemaCommonKeymap(docSchema)
 };
