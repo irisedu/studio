@@ -2,12 +2,8 @@ import { useState, useRef } from 'react';
 import { ProseMirror } from '@nytimes/react-prosemirror';
 import { EditorState } from 'prosemirror-state';
 import { Node } from 'prosemirror-model';
-import { keymap } from 'prosemirror-keymap';
-import { history } from 'prosemirror-history';
-import { inputRules } from 'prosemirror-inputrules';
 import { docSchema } from './prosemirror/schema.js';
-import { docKeymap } from './prosemirror/keymap.js';
-import { docRules } from './prosemirror/inputrules.js';
+import { docPlugins } from './prosemirror/plugins.js';
 import { useFileEditor } from './editorUtils.js';
 import MenuBar from './prosemirror/MenuBar.jsx';
 
@@ -23,7 +19,7 @@ const editorProps = {
 };
 
 const stateConfig = {
-	plugins: [history(), keymap(docKeymap), inputRules({ rules: docRules })]
+	plugins: docPlugins
 };
 
 const defaultState = EditorState.create({

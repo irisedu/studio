@@ -166,7 +166,7 @@ function MenuBar() {
 
 			<CommandButton
 				Icon={ClearFormatting}
-				command={clearFormatting(docSchema.nodes.paragraph)}
+				command={clearFormatting}
 				aria-label="Clear Formatting"
 				tooltip="Clear Formatting"
 			/>

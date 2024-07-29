@@ -5,10 +5,44 @@ import {
 } from 'prosemirror-inputrules';
 import { baseSchema, docSchema } from './schema.js';
 
-// Some input rules from ProseMirror examples
+// Some input rules and code from ProseMirror examples
 // Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT)
 
-const smartQuotes = [
+function smartyPantsRule(regex, replacement) {
+	return new InputRule(regex, (state, match, start, end) => {
+		// Disable smartypants rules in inline code
+		const { $from, empty } = state.selection;
+		const codeType = state.schema.marks.code;
+		if (
+			(empty && codeType.isInSet(state.storedMarks || $from.marks())) ||
+			state.doc.rangeHasMark(start, end, codeType)
+		)
+			return null;
+
+		// https://github.com/ProseMirror/prosemirror-inputrules/blob/master/src/inputrules.ts
+		// stringHandler
+		let insert = replacement;
+		if (match[1]) {
+			let offset = match[0].lastIndexOf(match[1]);
+			insert += match[0].slice(offset + match[1].length);
+			start += offset;
+			let cutOff = start - end;
+			if (cutOff > 0) {
+				insert = match[0].slice(offset - cutOff, offset) + insert;
+				start = end;
+			}
+		}
+
+		return state.tr.insertText(insert, start, end);
+	});
+}
+
+// https://github.com/ProseMirror/prosemirror-inputrules/blob/master/src/rules.ts
+const smartyPants = [
+	smartyPantsRule(/--$/, '–'), // en
+	smartyPantsRule(/–-$/, '—'), // em
+	smartyPantsRule(/\.\.\.$/, '…'), // ellipsis
+
 	// cycles
 	new InputRule(/“"$/, '”'),
 	new InputRule(/”"$/, '"'),
@@ -19,47 +53,14 @@ const smartQuotes = [
 	new InputRule(/''$/, '‘'),
 
 	// normal
-	new InputRule(/(?:^|[\s{[(<`'"\u2018\u201C])(")$/, '“'), // open double quote
-	new InputRule(/"$/, '”'), // close double quote
-	new InputRule(/(?:^|[\s{[(<`'"\u2018\u201C])(')$/, '‘'), // open single quote
-	new InputRule(/'$/, '’') // close single quote
+	smartyPantsRule(/(?:^|[\s{[(<`'"\u2018\u201C])(")$/, '“'), // open double quote
+	smartyPantsRule(/"$/, '”'), // close double quote
+	smartyPantsRule(/(?:^|[\s{[(<`'"\u2018\u201C])(')$/, '‘'), // open single quote
+	smartyPantsRule(/'$/, '’') // close single quote
 ];
-
-// https://github.com/ProseMirror/prosemirror-inputrules/blob/master/src/rules.ts
-const smartyPants = [
-	new InputRule(/--$/, '–'), // en
-	new InputRule(/–-$/, '—'), // em
-	new InputRule(/\.\.\.$/, '…'), // ellipsis
-	...smartQuotes
-];
-
-function markRule(delimiter, delimiterLength, markType, opts) {
-	return new InputRule(
-		new RegExp(`(^|[\\s])${delimiter}(.+)${delimiter}$`, 'i'),
-		(state, match, start, end) => {
-			const mark = markType.create();
-			const offset = match[1].length;
-
-			start += offset;
-
-			return state.tr
-				.addMark(start, end, mark)
-				.delete(end - delimiterLength + 1, end)
-				.delete(start, start + delimiterLength)
-				.removeStoredMark(mark);
-		},
-		opts
-	);
-}
 
 function schemaCommonRules(schema) {
 	return [
-		markRule('/', 1, schema.marks.em, { inCode: true }),
-		markRule('\\*', 1, schema.marks.strong, { inCode: true }),
-		markRule('__', 2, schema.marks.u, { inCode: true }),
-		markRule('~~', 2, schema.marks.s, { inCode: true }),
-		markRule('`', 1, schema.marks.code),
-
 		// https://github.com/ProseMirror/prosemirror-example-setup/blob/master/src/inputrules.ts
 		textblockTypeInputRule(/^(#{2,4})\s$/, schema.nodes.heading, (match) => ({
 			level: match[1].length
