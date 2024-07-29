@@ -6,6 +6,7 @@ export default {
 	theme: {
 		fontFamily: {
 			serif: ['Vollkorn'],
+			smallcaps: ['Vollkorn\\ SC'],
 			sans: ['IBM\\ Plex\\ Sans'],
 			mono: ['JetBrains\\ Mono']
 		},
@@ -38,5 +39,6 @@ export default {
 		}
 	},
 	darkMode: 'class',
-	plugins: [nightwind]
+	plugins: [nightwind],
+	safelist: ['font-smallcaps']
 };

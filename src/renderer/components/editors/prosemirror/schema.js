@@ -84,6 +84,16 @@ const baseSchemaDef = {
 			},
 			parseDOM: [{ tag: 's' }, { style: 'text-decoration=line-through' }]
 		},
+		smallcaps: {
+			toDOM() {
+				return ['span', { class: 'font-smallcaps' }, 0];
+			},
+			parseDOM: [
+				{ tag: 'span.font-smallcaps' },
+				{ style: 'font-variant=small-caps' },
+				{ style: 'font-variant-caps=small-caps' }
+			]
+		},
 
 		code: {
 			toDOM() {

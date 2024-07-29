@@ -69,6 +69,7 @@
 		"@fontsource/ibm-plex-sans": "^5.0.20",
 		"@fontsource/jetbrains-mono": "^5.0.20",
 		"@fontsource/vollkorn": "^5.0.20",
+		"@fontsource/vollkorn-sc": "^5.0.13",
 		"@iconify-json/tabler": "^1.1.118",
 		"@nytimes/react-prosemirror": "^0.6.1",
 		"@reduxjs/toolkit": "^2.2.6",

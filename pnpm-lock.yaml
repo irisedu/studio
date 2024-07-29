@@ -26,6 +26,9 @@ importers:
       '@fontsource/vollkorn':
         specifier: ^5.0.20
         version: 5.0.20
+      '@fontsource/vollkorn-sc':
+        specifier: ^5.0.13
+        version: 5.0.13
       '@iconify-json/tabler':
         specifier: ^1.1.118
         version: 1.1.118
@@ -666,6 +669,9 @@ packages:
 
   '@fontsource/jetbrains-mono@5.0.20':
     resolution: {integrity: sha512-QkrihYWqftzs+04TinulIhnFqNwO6990HR07iCUae/6daOZAMy7urUPzytrRT9M8KLTTHBeHOY0CKqOs1+o2OQ==}
+
+  '@fontsource/vollkorn-sc@5.0.13':
+    resolution: {integrity: sha512-ZNvuKud+87sqnbJ11RZetWuYWhpzsamdogGz10ZxDhMg7wVzKMvgfVJTYee+tZFA32Pb7UTnf308iBtNwq67jQ==}
 
   '@fontsource/vollkorn@5.0.20':
     resolution: {integrity: sha512-ReDtojBpr3KkPw8kE/IzdaisNPGEDe3m9dnHnWYk+j0uaoniXVRSEU0jIKxN8O+prsF0RmOd2jeREArZQehesg==}
@@ -4729,6 +4735,8 @@ snapshots:
   '@fontsource/ibm-plex-sans@5.0.20': {}
 
   '@fontsource/jetbrains-mono@5.0.20': {}
+
+  '@fontsource/vollkorn-sc@5.0.13': {}
 
   '@fontsource/vollkorn@5.0.20': {}
 

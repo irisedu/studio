@@ -23,6 +23,7 @@ import Redo from '~icons/tabler/arrow-forward-up';
 import Bold from '~icons/tabler/bold';
 import Italic from '~icons/tabler/italic';
 import Underline from '~icons/tabler/underline';
+import SmallCaps from '~icons/tabler/letter-a-small';
 import Code from '~icons/tabler/code';
 import Heading from '~icons/tabler/heading';
 import ClearFormatting from '~icons/tabler/clear-formatting';
@@ -169,6 +170,12 @@ function MenuBar() {
 				markType={docSchema.marks.u}
 				aria-label="Underline"
 				tooltip="Underline"
+			/>
+			<ToggleMarkButton
+				Icon={SmallCaps}
+				markType={docSchema.marks.smallcaps}
+				aria-label="Small Caps"
+				tooltip="Small Caps"
 			/>
 			<ToggleMarkButton
 				Icon={Code}
