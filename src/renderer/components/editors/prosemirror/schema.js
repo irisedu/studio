@@ -1,4 +1,5 @@
 import { Schema } from 'prosemirror-model';
+import { orderedList, bulletList, listItem } from 'prosemirror-schema-list';
 
 // Some portions from https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.ts
 // Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT)
@@ -6,6 +7,14 @@ const baseSchemaDef = {
 	nodes: {
 		doc: { content: 'block+' },
 		text: { group: 'inline' },
+		nbsp: {
+			group: 'inline',
+			inline: true,
+			toDOM() {
+				return ['span', { class: 'display-nbsp' }, '\u00A0'];
+			},
+			parseDOM: [{ tag: 'span.display-nbsp' }]
+		},
 
 		paragraph: {
 			group: 'block',
@@ -14,6 +23,21 @@ const baseSchemaDef = {
 				return ['p', 0];
 			},
 			parseDOM: [{ tag: 'p' }]
+		},
+
+		ordered_list: {
+			...orderedList,
+			content: 'list_item+',
+			group: 'block'
+		},
+		bullet_list: {
+			...bulletList,
+			content: 'list_item+',
+			group: 'block'
+		},
+		list_item: {
+			...listItem,
+			content: 'paragraph block*'
 		},
 
 		heading: {
@@ -29,15 +53,6 @@ const baseSchemaDef = {
 				{ tag: 'h3', attrs: { level: 3 } },
 				{ tag: 'h4', attrs: { level: 4 } }
 			]
-		},
-
-		nbsp: {
-			group: 'inline',
-			inline: true,
-			toDOM() {
-				return ['span', { class: 'display-nbsp' }, '\u00A0'];
-			},
-			parseDOM: [{ tag: 'span.display-nbsp' }]
 		}
 	},
 	marks: {

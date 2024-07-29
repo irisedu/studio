@@ -1,5 +1,12 @@
-import { InputRule, textblockTypeInputRule } from 'prosemirror-inputrules';
+import {
+	InputRule,
+	textblockTypeInputRule,
+	wrappingInputRule
+} from 'prosemirror-inputrules';
 import { baseSchema, docSchema } from './schema.js';
+
+// Some input rules from ProseMirror examples
+// Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT)
 
 const smartQuotes = [
 	// cycles
@@ -18,6 +25,7 @@ const smartQuotes = [
 	new InputRule(/'$/, '’') // close single quote
 ];
 
+// https://github.com/ProseMirror/prosemirror-inputrules/blob/master/src/rules.ts
 const smartyPants = [
 	new InputRule(/--$/, '–'), // en
 	new InputRule(/–-$/, '—'), // em
@@ -55,11 +63,18 @@ function schemaCommonRules(schema) {
 		// https://github.com/ProseMirror/prosemirror-example-setup/blob/master/src/inputrules.ts
 		textblockTypeInputRule(/^(#{2,4})\s$/, schema.nodes.heading, (match) => ({
 			level: match[1].length
-		}))
+		})),
+
+		wrappingInputRule(
+			/^(\d+)\.\s$/,
+			schema.nodes.ordered_list,
+			(match) => ({ order: +match[1] }),
+			(match, node) => node.childCount + node.attrs.order == +match[1]
+		),
+		wrappingInputRule(/^\s*([-+*])\s$/, schema.nodes.bullet_list)
 	];
 }
 
-// https://github.com/ProseMirror/prosemirror-inputrules/blob/master/src/rules.ts
 const _baseRules = [...smartyPants];
 
 export const baseRules = [..._baseRules, ...schemaCommonRules(baseSchema)];

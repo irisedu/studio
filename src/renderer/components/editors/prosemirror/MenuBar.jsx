@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { docSchema } from './schema.js';
 import { undo, redo } from 'prosemirror-history';
 import { toggleMark, setBlockType } from 'prosemirror-commands';
+import { wrapInList, liftListItem } from 'prosemirror-schema-list';
 import {
 	useEditorEventCallback,
 	useEditorEffect
@@ -27,6 +28,9 @@ import SmallCaps from '~icons/tabler/letter-a-small';
 import Code from '~icons/tabler/code';
 import Heading from '~icons/tabler/heading';
 import ClearFormatting from '~icons/tabler/clear-formatting';
+import OrderedList from '~icons/tabler/list-numbers';
+import BulletList from '~icons/tabler/list';
+import Outdent from '~icons/tabler/indent-decrease';
 
 function markActive(state, markType) {
 	// https://github.com/ProseMirror/prosemirror-example-setup/blob/43c1d95fb8669a86c3869338da00dd6bd974197d/src/menu.ts#L58-L62
@@ -40,20 +44,27 @@ function isNode(state, nodeType) {
 	return state.selection.$from.parent.type === nodeType;
 }
 
-function CommandButton({ Icon, command, tooltip, ...props }) {
+function CommandButton({ Icon, command, tooltip, alwaysVisible, ...props }) {
+	const [visible, setVisible] = useState(false);
 	const onPress = useEditorEventCallback((view) => {
 		command(view.state, view.dispatch, view);
 
 		view.focus();
 	});
 
+	useEditorEffect((view) => {
+		setVisible(command(view.state, null, view));
+	});
+
 	return (
-		<TooltipTrigger delay={300}>
-			<Button className="round-button" onPress={onPress} {...props}>
-				<Icon className="text-iris-500 w-3/5 h-3/5 m-auto" />
-			</Button>
-			<Tooltip placement="bottom">{tooltip}</Tooltip>
-		</TooltipTrigger>
+		(alwaysVisible || visible) && (
+			<TooltipTrigger delay={300}>
+				<Button className="round-button" onPress={onPress} {...props}>
+					<Icon className="text-iris-500 w-3/5 h-3/5 m-auto" />
+				</Button>
+				<Tooltip placement="bottom">{tooltip}</Tooltip>
+			</TooltipTrigger>
+		)
 	);
 }
 
@@ -86,6 +97,7 @@ function ToggleMarkButton({ Icon, markType, tooltip, ...props }) {
 }
 
 function HeadingMenu() {
+	const [visible, setVisible] = useState(false);
 	const [active, setActive] = useState(false);
 
 	const setNormal = useEditorEventCallback((view) => {
@@ -101,30 +113,36 @@ function HeadingMenu() {
 	});
 
 	useEditorEffect((view) => {
+		setVisible(
+			setBlockType(docSchema.nodes.paragraph)(view.state, null, view) ||
+				setBlockType(docSchema.nodes.heading)(view.state, null, view)
+		);
 		setActive(isNode(view.state, docSchema.nodes.heading));
 	});
 
 	return (
-		<MenuTrigger>
-			<TooltipTrigger delay={300}>
-				<ToggleButton
-					className="round-button"
-					aria-label="Heading"
-					isSelected={active}
-				>
-					<Heading className="text-iris-500 w-3/5 h-3/5 m-auto" />
-				</ToggleButton>
-				<Tooltip placement="bottom">Heading</Tooltip>
-			</TooltipTrigger>
-			<Popover>
-				<Menu>
-					<MenuItem onAction={setNormal}>Normal text</MenuItem>
-					<MenuItem onAction={() => changeHeading(2)}>Heading 2</MenuItem>
-					<MenuItem onAction={() => changeHeading(3)}>Heading 3</MenuItem>
-					<MenuItem onAction={() => changeHeading(4)}>Heading 4</MenuItem>
-				</Menu>
-			</Popover>
-		</MenuTrigger>
+		visible && (
+			<MenuTrigger>
+				<TooltipTrigger delay={300}>
+					<ToggleButton
+						className="round-button"
+						aria-label="Heading"
+						isSelected={active}
+					>
+						<Heading className="text-iris-500 w-3/5 h-3/5 m-auto" />
+					</ToggleButton>
+					<Tooltip placement="bottom">Heading</Tooltip>
+				</TooltipTrigger>
+				<Popover>
+					<Menu>
+						<MenuItem onAction={setNormal}>Normal text</MenuItem>
+						<MenuItem onAction={() => changeHeading(2)}>Heading 2</MenuItem>
+						<MenuItem onAction={() => changeHeading(3)}>Heading 3</MenuItem>
+						<MenuItem onAction={() => changeHeading(4)}>Heading 4</MenuItem>
+					</Menu>
+				</Popover>
+			</MenuTrigger>
+		)
 	);
 }
 
@@ -136,12 +154,14 @@ function MenuBar() {
 				command={undo}
 				aria-label="Undo"
 				tooltip="Undo"
+				alwaysVisible
 			/>
 			<CommandButton
 				Icon={Redo}
 				command={redo}
 				aria-label="Redo"
 				tooltip="Redo"
+				alwaysVisible
 			/>
 
 			<CommandButton
@@ -187,6 +207,24 @@ function MenuBar() {
 			<div className="w-5" />
 
 			<HeadingMenu />
+			<CommandButton
+				Icon={OrderedList}
+				command={wrapInList(docSchema.nodes.ordered_list)}
+				aria-label="Number List"
+				tooltip="Number List"
+			/>
+			<CommandButton
+				Icon={BulletList}
+				command={wrapInList(docSchema.nodes.bullet_list)}
+				aria-label="Bullet List"
+				tooltip="Bullet List"
+			/>
+			<CommandButton
+				Icon={Outdent}
+				command={liftListItem(docSchema.nodes.list_item)}
+				aria-label="List Outdent"
+				tooltip="List Outdent"
+			/>
 		</div>
 	);
 }

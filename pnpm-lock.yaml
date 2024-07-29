@@ -97,7 +97,7 @@ importers:
         version: 0.4.8(eslint@8.57.0)
       iris:
         specifier: github:irisedu/iris
-        version: https://codeload.github.com/irisedu/iris/tar.gz/fc22ea84ea5a2727aae91f6c12eda0940a600eed
+        version: https://codeload.github.com/irisedu/iris/tar.gz/596a43914d88d3e96908a68890799213565e18f6
       nightwind:
         specifier: ^1.1.13
         version: 1.1.13(tailwindcss@3.4.6)
@@ -122,6 +122,9 @@ importers:
       prosemirror-model:
         specifier: ^1.22.2
         version: 1.22.2
+      prosemirror-schema-list:
+        specifier: ^1.4.1
+        version: 1.4.1
       prosemirror-state:
         specifier: ^1.4.3
         version: 1.4.3
@@ -2692,8 +2695,8 @@ packages:
   intl-messageformat@10.5.14:
     resolution: {integrity: sha512-IjC6sI0X7YRjjyVH9aUgdftcmZK7WXdHeil4KwbjDnRWjnVitKpAx3rr6t6di1joFp5188VqKcobOPA6mCLG/w==}
 
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/fc22ea84ea5a2727aae91f6c12eda0940a600eed:
-    resolution: {tarball: https://codeload.github.com/irisedu/iris/tar.gz/fc22ea84ea5a2727aae91f6c12eda0940a600eed}
+  iris@https://codeload.github.com/irisedu/iris/tar.gz/596a43914d88d3e96908a68890799213565e18f6:
+    resolution: {tarball: https://codeload.github.com/irisedu/iris/tar.gz/596a43914d88d3e96908a68890799213565e18f6}
     version: 0.0.0
 
   is-array-buffer@3.0.4:
@@ -3318,6 +3321,9 @@ packages:
 
   prosemirror-model@1.22.2:
     resolution: {integrity: sha512-I4lS7HHIW47D0Xv/gWmi4iUWcQIDYaJKd8Hk4+lcSps+553FlQrhmxtItpEvTr75iAruhzVShVp6WUwsT6Boww==}
+
+  prosemirror-schema-list@1.4.1:
+    resolution: {integrity: sha512-jbDyaP/6AFfDfu70VzySsD75Om2t3sXTOdl5+31Wlxlg62td1haUpty/ybajSfJ1pkGadlOfwQq9kgW5IMo1Rg==}
 
   prosemirror-state@1.4.3:
     resolution: {integrity: sha512-goFKORVbvPuAQaXhpbemJFRKJ2aixr+AZMGiquiqKxaucC6hlpHNZHWgz5R7dS4roHiwq9vDctE//CZ++o0W1Q==}
@@ -7548,7 +7554,7 @@ snapshots:
       '@formatjs/icu-messageformat-parser': 2.7.8
       tslib: 2.6.2
 
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/fc22ea84ea5a2727aae91f6c12eda0940a600eed:
+  iris@https://codeload.github.com/irisedu/iris/tar.gz/596a43914d88d3e96908a68890799213565e18f6:
     dependencies:
       highlight.js: 11.10.0
       highlightjs-line-numbers.js: 2.8.0
@@ -8133,6 +8139,12 @@ snapshots:
   prosemirror-model@1.22.2:
     dependencies:
       orderedmap: 2.1.1
+
+  prosemirror-schema-list@1.4.1:
+    dependencies:
+      prosemirror-model: 1.22.2
+      prosemirror-state: 1.4.3
+      prosemirror-transform: 1.9.0
 
   prosemirror-state@1.4.3:
     dependencies:
