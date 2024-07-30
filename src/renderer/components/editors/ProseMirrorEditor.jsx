@@ -6,6 +6,7 @@ import { docSchema } from './prosemirror/schema.js';
 import { docPlugins } from './prosemirror/plugins.js';
 import { useFileEditor } from './editorUtils.js';
 import MenuBar from './prosemirror/MenuBar.jsx';
+import nodeViews from './prosemirror/nodeViews.js';
 
 import 'prosemirror-view/style/prosemirror.css';
 import './prosemirror/styles.css';
@@ -67,6 +68,7 @@ function ProseMirrorEditor({ tabData }) {
 				{...editorProps}
 				mount={mount}
 				state={editorState}
+				nodeViews={nodeViews}
 				dispatchTransaction={(tr) => {
 					setEditorState((s) => {
 						const newState = s.apply(tr);

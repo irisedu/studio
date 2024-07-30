@@ -6,6 +6,7 @@ import { baseRules, docRules } from './inputrules.js';
 import { gapCursor } from 'prosemirror-gapcursor';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { tableEditing, columnResizing } from 'prosemirror-tables';
+import { cmArrowHandlers } from './codemirror.js';
 
 const _basePlugins = [
 	history(),
@@ -15,7 +16,8 @@ const _basePlugins = [
 	}),
 	gapCursor(),
 	columnResizing(),
-	tableEditing()
+	tableEditing(),
+	cmArrowHandlers
 ];
 
 export const basePlugins = [

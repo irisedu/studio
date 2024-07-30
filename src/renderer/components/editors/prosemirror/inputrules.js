@@ -72,7 +72,15 @@ function schemaCommonRules(schema) {
 			(match) => ({ order: +match[1] }),
 			(match, node) => node.childCount + node.attrs.order == +match[1]
 		),
-		wrappingInputRule(/^\s*([-+*])\s$/, schema.nodes.bullet_list)
+		wrappingInputRule(/^\s*([-+*])\s$/, schema.nodes.bullet_list),
+
+		textblockTypeInputRule(
+			/^```(\S*)\s+$/,
+			schema.nodes.code_block,
+			(match) => {
+				return { language: match[1] };
+			}
+		)
 	];
 }
 

@@ -61,6 +61,14 @@
 	@apply bg-black;
 }
 
+.CodeMirror-container {
+	@apply relative;
+
+	.CodeMirror-languagelabel {
+		@apply absolute top-0 right-0 font-mono text-xs bg-iris-200 px-1 py-0.5 select-none rounded-bl-sm;
+	}
+}
+
 /* https://github.com/ProseMirror/prosemirror-gapcursor/blob/master/style/gapcursor.css */
 /* Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT) */
 

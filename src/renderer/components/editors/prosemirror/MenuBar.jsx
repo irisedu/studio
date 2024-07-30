@@ -32,9 +32,14 @@ import {
 	Popover,
 	Menu,
 	MenuItem,
-	Separator
+	Separator,
+	Modal,
+	Dialog,
+	Heading,
+	ListBoxItem
 } from 'react-aria-components';
-import { Submenu } from 'iris/aria-components';
+import { Submenu, Dropdown } from 'iris/aria-components';
+import { languages } from '@codemirror/language-data';
 import {
 	clearFormatting,
 	addTable,
@@ -50,7 +55,7 @@ import Italic from '~icons/tabler/italic';
 import Underline from '~icons/tabler/underline';
 import SmallCaps from '~icons/tabler/letter-a-small';
 import Code from '~icons/tabler/code';
-import Heading from '~icons/tabler/heading';
+import TextStyle from '~icons/tabler/text-size';
 import ClearFormatting from '~icons/tabler/clear-formatting';
 import OrderedList from '~icons/tabler/list-numbers';
 import BulletList from '~icons/tabler/list';
@@ -96,6 +101,7 @@ function CommandButton({ Icon, command, tooltip, alwaysVisible, ...props }) {
 }
 
 function ToggleMarkButton({ Icon, markType, tooltip, ...props }) {
+	const [visible, setVisible] = useState(false);
 	const [active, setActive] = useState(false);
 	const onChange = useEditorEventCallback((view, value) => {
 		toggleMark(markType)(view.state, view.dispatch, view);
@@ -105,27 +111,32 @@ function ToggleMarkButton({ Icon, markType, tooltip, ...props }) {
 	});
 
 	useEditorEffect((view) => {
+		setVisible(toggleMark(markType)(view.state, null, view));
 		setActive(markActive(view.state, markType));
 	});
 
 	return (
-		<TooltipTrigger delay={300}>
-			<ToggleButton
-				className="round-button"
-				isSelected={active}
-				onChange={onChange}
-				{...props}
-			>
-				<Icon className="text-iris-500 w-3/5 h-3/5 m-auto" />
-			</ToggleButton>
-			<Tooltip placement="bottom">{tooltip}</Tooltip>
-		</TooltipTrigger>
+		visible && (
+			<TooltipTrigger delay={300}>
+				<ToggleButton
+					className="round-button"
+					isSelected={active}
+					onChange={onChange}
+					{...props}
+				>
+					<Icon className="text-iris-500 w-3/5 h-3/5 m-auto" />
+				</ToggleButton>
+				<Tooltip placement="bottom">{tooltip}</Tooltip>
+			</TooltipTrigger>
+		)
 	);
 }
 
-function HeadingMenu() {
+function TextStyleMenu() {
 	const [visible, setVisible] = useState(false);
 	const [active, setActive] = useState(false);
+	const [codeDialogOpen, setCodeDialogOpen] = useState(false);
+	const [language, setLanguage] = useState('');
 
 	const setNormal = useEditorEventCallback((view) => {
 		setBlockType(docSchema.nodes.paragraph)(view.state, view.dispatch, view);
@@ -139,36 +150,99 @@ function HeadingMenu() {
 		);
 	});
 
+	const setCode = useEditorEventCallback((view, language) => {
+		setBlockType(docSchema.nodes.code_block, { language })(
+			view.state,
+			view.dispatch,
+			view
+		);
+	});
+
 	useEditorEffect((view) => {
 		setVisible(
 			setBlockType(docSchema.nodes.paragraph)(view.state, null, view) ||
-				setBlockType(docSchema.nodes.heading)(view.state, null, view)
+				setBlockType(docSchema.nodes.heading)(view.state, null, view) ||
+				setBlockType(docSchema.nodes.code_block)(view.state, null, view)
 		);
-		setActive(isNode(view.state, docSchema.nodes.heading));
+		setActive(
+			isNode(view.state, docSchema.nodes.heading) ||
+				isNode(view.state, docSchema.nodes.code_block)
+		);
 	});
 
 	return (
 		visible && (
-			<MenuTrigger>
-				<TooltipTrigger delay={300}>
-					<ToggleButton
-						className="round-button"
-						aria-label="Heading"
-						isSelected={active}
-					>
-						<Heading className="text-iris-500 w-3/5 h-3/5 m-auto" />
-					</ToggleButton>
-					<Tooltip placement="bottom">Heading</Tooltip>
-				</TooltipTrigger>
-				<Popover>
-					<Menu>
-						<MenuItem onAction={setNormal}>Normal text</MenuItem>
-						<MenuItem onAction={() => changeHeading(2)}>Heading 2</MenuItem>
-						<MenuItem onAction={() => changeHeading(3)}>Heading 3</MenuItem>
-						<MenuItem onAction={() => changeHeading(4)}>Heading 4</MenuItem>
-					</Menu>
-				</Popover>
-			</MenuTrigger>
+			<>
+				<Modal
+					isDismissable
+					isOpen={codeDialogOpen}
+					onOpenChange={setCodeDialogOpen}
+				>
+					<Dialog>
+						<Heading slot="title">Insert code block</Heading>
+						<Dropdown
+							label="Language"
+							selectedKey={language}
+							onSelectionChange={setLanguage}
+						>
+							<ListBoxItem id="">Plain text</ListBoxItem>
+							{languages.map((lang) => (
+								<ListBoxItem
+									key={lang.name}
+									id={lang.alias.length ? lang.alias[0] : lang.name}
+									textValue={lang.name}
+								>
+									{lang.name}
+									{lang.alias.length && !lang.alias[0].includes(' ') && (
+										<>
+											{' '}
+											(<span className="font-mono">{lang.alias[0]}</span>)
+										</>
+									)}
+								</ListBoxItem>
+							))}
+						</Dropdown>
+						<Button
+							className="react-aria-Button border-iris-300"
+							autoFocus
+							onPress={() => {
+								setCode(language);
+								setCodeDialogOpen(false);
+							}}
+						>
+							Create
+						</Button>
+					</Dialog>
+				</Modal>
+
+				<MenuTrigger>
+					<TooltipTrigger delay={300}>
+						<ToggleButton
+							className="round-button"
+							aria-label="Text Style"
+							isSelected={active}
+						>
+							<TextStyle className="text-iris-500 w-3/5 h-3/5 m-auto" />
+						</ToggleButton>
+						<Tooltip placement="bottom">Text Style</Tooltip>
+					</TooltipTrigger>
+					<Popover>
+						<Menu>
+							<MenuItem onAction={setNormal}>Normal text</MenuItem>
+							<MenuItem onAction={() => changeHeading(2)}>Heading 2</MenuItem>
+							<MenuItem onAction={() => changeHeading(3)}>Heading 3</MenuItem>
+							<MenuItem onAction={() => changeHeading(4)}>Heading 4</MenuItem>
+							<MenuItem
+								onAction={() => {
+									setCodeDialogOpen(true);
+								}}
+							>
+								Code Block
+							</MenuItem>
+						</Menu>
+					</Popover>
+				</MenuTrigger>
+			</>
 		)
 	);
 }
@@ -322,92 +396,94 @@ function SidenoteNumberingToggle() {
 
 function MenuBar() {
 	return (
-		<div className="flex flex-row items-center gap-2 p-2">
-			<CommandButton
-				Icon={Undo}
-				command={undo}
-				aria-label="Undo"
-				tooltip="Undo"
-				alwaysVisible
-			/>
-			<CommandButton
-				Icon={Redo}
-				command={redo}
-				aria-label="Redo"
-				tooltip="Redo"
-				alwaysVisible
-			/>
+		<div className="flex flex-row items-center gap-5 p-2">
+			<div className="flex flex-row gap-2">
+				<CommandButton
+					Icon={Undo}
+					command={undo}
+					aria-label="Undo"
+					tooltip="Undo"
+					alwaysVisible
+				/>
+				<CommandButton
+					Icon={Redo}
+					command={redo}
+					aria-label="Redo"
+					tooltip="Redo"
+					alwaysVisible
+				/>
 
-			<CommandButton
-				Icon={ClearFormatting}
-				command={clearFormatting}
-				aria-label="Clear Formatting"
-				tooltip="Clear Formatting"
-			/>
+				<CommandButton
+					Icon={ClearFormatting}
+					command={clearFormatting}
+					aria-label="Clear Formatting"
+					tooltip="Clear Formatting"
+				/>
+			</div>
 
-			<div className="w-5" />
+			<div className="flex flex-row gap-2">
+				<ToggleMarkButton
+					Icon={Bold}
+					markType={docSchema.marks.strong}
+					aria-label="Bold"
+					tooltip="Bold"
+				/>
+				<ToggleMarkButton
+					Icon={Italic}
+					markType={docSchema.marks.em}
+					aria-label="Italic"
+					tooltip="Italic"
+				/>
+				<ToggleMarkButton
+					Icon={Underline}
+					markType={docSchema.marks.u}
+					aria-label="Underline"
+					tooltip="Underline"
+				/>
+				<ToggleMarkButton
+					Icon={SmallCaps}
+					markType={docSchema.marks.smallcaps}
+					aria-label="Small Caps"
+					tooltip="Small Caps"
+				/>
+				<ToggleMarkButton
+					Icon={Code}
+					markType={docSchema.marks.code}
+					aria-label="Inline Code"
+					tooltip="Inline Code"
+				/>
+			</div>
 
-			<ToggleMarkButton
-				Icon={Bold}
-				markType={docSchema.marks.strong}
-				aria-label="Bold"
-				tooltip="Bold"
-			/>
-			<ToggleMarkButton
-				Icon={Italic}
-				markType={docSchema.marks.em}
-				aria-label="Italic"
-				tooltip="Italic"
-			/>
-			<ToggleMarkButton
-				Icon={Underline}
-				markType={docSchema.marks.u}
-				aria-label="Underline"
-				tooltip="Underline"
-			/>
-			<ToggleMarkButton
-				Icon={SmallCaps}
-				markType={docSchema.marks.smallcaps}
-				aria-label="Small Caps"
-				tooltip="Small Caps"
-			/>
-			<ToggleMarkButton
-				Icon={Code}
-				markType={docSchema.marks.code}
-				aria-label="Inline Code"
-				tooltip="Inline Code"
-			/>
+			<div className="flex flex-row gap-2">
+				<TextStyleMenu />
+				<TableMenu />
 
-			<div className="w-5" />
-
-			<HeadingMenu />
-			<TableMenu />
-
-			<CommandButton
-				Icon={OrderedList}
-				command={wrapInList(docSchema.nodes.ordered_list)}
-				aria-label="Number List"
-				tooltip="Number List"
-			/>
-			<CommandButton
-				Icon={BulletList}
-				command={wrapInList(docSchema.nodes.bullet_list)}
-				aria-label="Bullet List"
-				tooltip="Bullet List"
-			/>
-			<CommandButton
-				Icon={Outdent}
-				command={liftListItem(docSchema.nodes.list_item)}
-				aria-label="List Outdent"
-				tooltip="List Outdent"
-			/>
-			<CommandButton
-				Icon={Sidenote}
-				command={insertSidenote}
-				aria-label="Sidenote"
-				tooltip="Sidenote"
-			/>
-			<SidenoteNumberingToggle />
+				<CommandButton
+					Icon={OrderedList}
+					command={wrapInList(docSchema.nodes.ordered_list)}
+					aria-label="Number List"
+					tooltip="Number List"
+				/>
+				<CommandButton
+					Icon={BulletList}
+					command={wrapInList(docSchema.nodes.bullet_list)}
+					aria-label="Bullet List"
+					tooltip="Bullet List"
+				/>
+				<CommandButton
+					Icon={Outdent}
+					command={liftListItem(docSchema.nodes.list_item)}
+					aria-label="List Outdent"
+					tooltip="List Outdent"
+				/>
+				<CommandButton
+					Icon={Sidenote}
+					command={insertSidenote}
+					aria-label="Sidenote"
+					tooltip="Sidenote"
+				/>
+				<SidenoteNumberingToggle />
+			</div>
 		</div>
 	);
 }

@@ -104,7 +104,20 @@ const baseSchemaDef = {
 					}
 				}
 			}
-		})
+		}),
+
+		code_block: {
+			group: 'block',
+			content: 'text*',
+			attrs: { language: { default: '', validate: 'string' } },
+			marks: '',
+			code: true,
+			defining: true,
+			toDOM() {
+				return ['pre', ['code', 0]];
+			},
+			parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }]
+		}
 	},
 	marks: {
 		em: {
@@ -162,7 +175,6 @@ const baseSchemaDef = {
 		},
 
 		code: {
-			code: true,
 			toDOM() {
 				return ['code', 0];
 			},
