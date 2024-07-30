@@ -19,11 +19,39 @@ const baseSchemaDef = {
 
 		paragraph: {
 			group: 'block',
-			content: 'inline*',
+			content: '(inline | sidenote)*',
 			toDOM() {
 				return ['p', 0];
 			},
 			parseDOM: [{ tag: 'p' }]
+		},
+		heading: {
+			group: 'block',
+			content: '(inline | sidenote)*',
+			attrs: { level: { default: 2, validate: 'number' } },
+			defining: true,
+			toDOM(node) {
+				return ['h' + node.attrs.level, 0];
+			},
+			parseDOM: [
+				{ tag: 'h2', attrs: { level: 2 } },
+				{ tag: 'h3', attrs: { level: 3 } },
+				{ tag: 'h4', attrs: { level: 4 } }
+			]
+		},
+		sidenote: {
+			content: 'block+',
+			inline: true,
+			isolating: true,
+			draggable: true,
+			toDOM() {
+				return [
+					'div',
+					{ class: 'aside-container' },
+					['span', { class: 'aside' }, 0]
+				];
+			},
+			parseDOM: [{ tag: 'aside' }]
 		},
 
 		ordered_list: {
@@ -56,22 +84,7 @@ const baseSchemaDef = {
 					}
 				}
 			}
-		}),
-
-		heading: {
-			group: 'block',
-			content: 'inline*',
-			attrs: { level: { default: 2, validate: 'number' } },
-			defining: true,
-			toDOM(node) {
-				return ['h' + node.attrs.level, 0];
-			},
-			parseDOM: [
-				{ tag: 'h2', attrs: { level: 2 } },
-				{ tag: 'h3', attrs: { level: 3 } },
-				{ tag: 'h4', attrs: { level: 4 } }
-			]
-		}
+		})
 	},
 	marks: {
 		em: {

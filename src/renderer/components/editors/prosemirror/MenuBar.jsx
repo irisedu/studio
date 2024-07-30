@@ -35,7 +35,7 @@ import {
 	Separator
 } from 'react-aria-components';
 import { Submenu } from 'iris/aria-components';
-import { clearFormatting, addTable } from './commands.js';
+import { clearFormatting, addTable, insertSidenote } from './commands.js';
 
 import Undo from '~icons/tabler/arrow-back-up';
 import Redo from '~icons/tabler/arrow-forward-up';
@@ -50,6 +50,7 @@ import OrderedList from '~icons/tabler/list-numbers';
 import BulletList from '~icons/tabler/list';
 import Outdent from '~icons/tabler/indent-decrease';
 import Table from '~icons/tabler/table';
+import Sidenote from '~icons/tabler/layout-sidebar-right-collapse-filled';
 
 function markActive(state, markType) {
 	// https://github.com/ProseMirror/prosemirror-example-setup/blob/43c1d95fb8669a86c3869338da00dd6bd974197d/src/menu.ts#L58-L62
@@ -358,6 +359,12 @@ function MenuBar() {
 				command={liftListItem(docSchema.nodes.list_item)}
 				aria-label="List Outdent"
 				tooltip="List Outdent"
+			/>
+			<CommandButton
+				Icon={Sidenote}
+				command={insertSidenote}
+				aria-label="Sidenote"
+				tooltip="Sidenote"
 			/>
 		</div>
 	);

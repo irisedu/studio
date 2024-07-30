@@ -12,6 +12,8 @@ import {
 	liftEmptyBlock,
 	splitBlock,
 	deleteSelection,
+	joinTextblockBackward,
+	joinTextblockForward,
 	joinBackward,
 	joinForward,
 	selectNodeBackward,
@@ -55,8 +57,18 @@ function schemaCommonKeymap(schema) {
 
 // https://github.com/ProseMirror/prosemirror-commands/blob/master/src/commands.ts
 export const baseKeymap = {
-	Backspace: chainCommands(deleteSelection, joinBackward, selectNodeBackward),
-	Delete: chainCommands(deleteSelection, joinForward, selectNodeForward),
+	Backspace: chainCommands(
+		deleteSelection,
+		joinTextblockBackward,
+		joinBackward,
+		selectNodeBackward
+	),
+	Delete: chainCommands(
+		deleteSelection,
+		joinTextblockForward,
+		joinForward,
+		selectNodeForward
+	),
 	'Mod-z': chainCommands(undoInputRule, undo),
 	'Mod-y': redo,
 	'Mod-Shift-z': redo,

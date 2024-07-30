@@ -3,10 +3,6 @@ import { TextSelection } from 'prosemirror-state';
 
 export function insertNbsp(state, dispatch) {
 	const nbsp = state.schema.nodes.nbsp;
-	const { $from } = state.selection;
-	const index = $from.index();
-
-	if (!$from.parent.canReplaceWith(index, index, nbsp)) return false;
 
 	if (dispatch) dispatch(state.tr.replaceSelectionWith(nbsp.create()));
 
@@ -79,6 +75,26 @@ export function addTable(
 
 		tr.setSelection(TextSelection.near(resolvedPos));
 
+		dispatch(tr);
+	}
+
+	return true;
+}
+
+export function insertSidenote(state, dispatch) {
+	const sidenote = state.schema.nodes.sidenote;
+	const { $from, anchor } = state.selection;
+
+	for (let i = 0; i <= $from.depth; i++) {
+		if ($from.node(i).type === sidenote) return false;
+	}
+
+	if (dispatch) {
+		const tr = state.tr.replaceSelectionWith(
+			sidenote.createAndFill({}, state.selection.content().content)
+		);
+
+		tr.setSelection(TextSelection.near(tr.doc.resolve(anchor + 2)));
 		dispatch(tr);
 	}
 
