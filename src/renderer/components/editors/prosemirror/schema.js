@@ -25,6 +25,22 @@ const baseSchemaDef = {
 			},
 			parseDOM: [{ tag: 'p' }]
 		},
+		hard_break: {
+			group: 'inline',
+			inline: true,
+			selectable: false,
+			toDOM() {
+				return ['br'];
+			},
+			parseDOM: [{ tag: 'br' }]
+		},
+		horizontal_rule: {
+			group: 'block',
+			toDOM() {
+				return ['hr'];
+			},
+			parseDOM: [{ tag: 'hr' }]
+		},
 		heading: {
 			group: 'block',
 			content: '(inline | sidenote)*',

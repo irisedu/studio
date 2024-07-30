@@ -14,7 +14,7 @@ const editorProps = {
 	attributes: {
 		spellcheck: 'false',
 		class:
-			'outline-none max-w-[70ch] box-content px-8 mr-[20ch] border-l-2 border-r-2 border-iris-300'
+			'outline-none max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch] border-l-2 border-r-2 border-iris-300'
 	}
 };
 

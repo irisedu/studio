@@ -25,7 +25,7 @@ import {
 import { goToNextCell } from 'prosemirror-tables';
 
 import { baseSchema, docSchema } from './schema.js';
-import { insertNbsp, clearFormatting } from './commands.js';
+import { insertNode, clearFormatting } from './commands.js';
 
 function schemaCommonKeymap(schema) {
 	return {
@@ -42,6 +42,11 @@ function schemaCommonKeymap(schema) {
 			liftEmptyBlock,
 			splitBlock
 		),
+
+		'Mod-Space': insertNode(schema.nodes.nbsp),
+		'Mod-Enter': chainCommands(exitCode, insertNode(schema.nodes.hard_break)),
+
+		'Mod-Shift--': insertNode(schema.nodes.horizontal_rule),
 
 		'Mod-i': toggleMark(schema.marks.em),
 		'Mod-b': toggleMark(schema.marks.strong),
@@ -74,9 +79,6 @@ export const baseKeymap = {
 	'Mod-Shift-z': redo,
 	'Mod-\\': clearFormatting,
 	'Mod-a': selectAll,
-	'Mod-Enter': exitCode,
-
-	'Mod-Space': insertNbsp,
 
 	'Shift-Tab': goToNextCell(-1),
 	Tab: goToNextCell(1),

@@ -1,12 +1,15 @@
 import { tableNodeTypes } from 'prosemirror-tables';
 import { TextSelection } from 'prosemirror-state';
 
-export function insertNbsp(state, dispatch) {
-	const nbsp = state.schema.nodes.nbsp;
+export function insertNode(nodeType) {
+	return (state, dispatch) => {
+		if (dispatch)
+			dispatch(
+				state.tr.replaceSelectionWith(nodeType.create()).scrollIntoView()
+			);
 
-	if (dispatch) dispatch(state.tr.replaceSelectionWith(nbsp.create()));
-
-	return true;
+		return true;
+	};
 }
 
 export function clearFormatting(state, dispatch) {
