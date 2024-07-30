@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
 	Button,
 	MenuTrigger,
-	SubmenuTrigger,
 	Popover,
 	Menu,
 	MenuItem,
@@ -12,6 +11,7 @@ import {
 } from 'react-aria-components';
 import { Tree } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
+import { Submenu } from 'iris/aria-components';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setOpenDirectory } from '$state/appSlice.js';
@@ -337,39 +337,32 @@ function Sidebar() {
 			<MenuTrigger isOpen={contextOpen} onOpenChange={setContextOpen}>
 				<Popover placement="bottom left" triggerRef={contextTarget}>
 					<Menu aria-label="File tree menu">
-						<SubmenuTrigger>
-							<MenuItem className="react-aria-MenuItem flex flex-row items-center">
-								Create new <ChevronRight className="w-4 h-4 ml-auto" />
+						<Submenu label="Create new">
+							<MenuItem
+								onAction={() => {
+									createExtension.current = '.iris';
+									treeCreate(tree.current, 'leaf');
+								}}
+							>
+								Iris document
 							</MenuItem>
-							<Popover>
-								<Menu aria-label="Create menu">
-									<MenuItem
-										onAction={() => {
-											createExtension.current = '.iris';
-											treeCreate(tree.current, 'leaf');
-										}}
-									>
-										Iris document
-									</MenuItem>
-									<MenuItem
-										onAction={() => {
-											createExtension.current = '';
-											treeCreate(tree.current, 'internal');
-										}}
-									>
-										Folder
-									</MenuItem>
-									<MenuItem
-										onAction={() => {
-											createExtension.current = '';
-											treeCreate(tree.current, 'leaf');
-										}}
-									>
-										Empty file
-									</MenuItem>
-								</Menu>
-							</Popover>
-						</SubmenuTrigger>
+							<MenuItem
+								onAction={() => {
+									createExtension.current = '';
+									treeCreate(tree.current, 'internal');
+								}}
+							>
+								Folder
+							</MenuItem>
+							<MenuItem
+								onAction={() => {
+									createExtension.current = '';
+									treeCreate(tree.current, 'leaf');
+								}}
+							>
+								Empty file
+							</MenuItem>
+						</Submenu>
 
 						{tree.current && tree.current.selectedNodes.length > 0 && (
 							<>

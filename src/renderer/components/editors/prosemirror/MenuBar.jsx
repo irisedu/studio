@@ -4,6 +4,22 @@ import { undo, redo } from 'prosemirror-history';
 import { toggleMark, setBlockType } from 'prosemirror-commands';
 import { wrapInList, liftListItem } from 'prosemirror-schema-list';
 import {
+	isInTable,
+	deleteTable,
+	addColumnAfter,
+	addColumnBefore,
+	deleteColumn,
+	addRowAfter,
+	addRowBefore,
+	deleteRow,
+	mergeCells,
+	splitCell,
+	setCellAttr,
+	toggleHeaderRow,
+	toggleHeaderColumn,
+	toggleHeaderCell
+} from 'prosemirror-tables';
+import {
 	useEditorEventCallback,
 	useEditorEffect
 } from '@nytimes/react-prosemirror';
@@ -15,9 +31,11 @@ import {
 	MenuTrigger,
 	Popover,
 	Menu,
-	MenuItem
+	MenuItem,
+	Separator
 } from 'react-aria-components';
-import { clearFormatting } from './commands.js';
+import { Submenu } from 'iris/aria-components';
+import { clearFormatting, addTable } from './commands.js';
 
 import Undo from '~icons/tabler/arrow-back-up';
 import Redo from '~icons/tabler/arrow-forward-up';
@@ -31,6 +49,7 @@ import ClearFormatting from '~icons/tabler/clear-formatting';
 import OrderedList from '~icons/tabler/list-numbers';
 import BulletList from '~icons/tabler/list';
 import Outdent from '~icons/tabler/indent-decrease';
+import Table from '~icons/tabler/table';
 
 function markActive(state, markType) {
 	// https://github.com/ProseMirror/prosemirror-example-setup/blob/43c1d95fb8669a86c3869338da00dd6bd974197d/src/menu.ts#L58-L62
@@ -146,6 +165,119 @@ function HeadingMenu() {
 	);
 }
 
+function TableMenu() {
+	const [active, setActive] = useState(false);
+
+	const insertTable = useEditorEventCallback((view) => {
+		addTable(view.state, view.dispatch, {
+			rowsCount: 2,
+			colsCount: 2,
+			withHeaderRow: true
+		});
+	});
+
+	const runCommand = useEditorEventCallback((view, command) => {
+		command(view.state, view.dispatch, view);
+	});
+
+	useEditorEffect((view) => {
+		// HACK: avoid new menu items from flashing on screen during animate out
+		setTimeout(() => setActive(isInTable(view.state)), 200);
+	});
+
+	return (
+		<MenuTrigger>
+			<TooltipTrigger delay={300}>
+				<ToggleButton
+					className="round-button"
+					aria-label="Table"
+					isSelected={active}
+				>
+					<Table className="text-iris-500 w-3/5 h-3/5 m-auto" />
+				</ToggleButton>
+				<Tooltip placement="bottom">Table</Tooltip>
+			</TooltipTrigger>
+			<Popover>
+				<Menu>
+					{!active && <MenuItem onAction={insertTable}>Insert table</MenuItem>}
+					{active && (
+						<>
+							<MenuItem onAction={() => runCommand(addColumnBefore)}>
+								Add column before
+							</MenuItem>
+							<MenuItem onAction={() => runCommand(addColumnAfter)}>
+								Add column after
+							</MenuItem>
+							<MenuItem onAction={() => runCommand(deleteColumn)}>
+								Delete column
+							</MenuItem>
+
+							<Separator />
+
+							<MenuItem onAction={() => runCommand(addRowBefore)}>
+								Add row before
+							</MenuItem>
+							<MenuItem onAction={() => runCommand(addRowAfter)}>
+								Add row after
+							</MenuItem>
+							<MenuItem onAction={() => runCommand(deleteRow)}>
+								Delete row
+							</MenuItem>
+
+							<Separator />
+
+							<MenuItem onAction={() => runCommand(mergeCells)}>
+								Merge cells
+							</MenuItem>
+							<MenuItem onAction={() => runCommand(splitCell)}>
+								Split cell
+							</MenuItem>
+
+							<Separator />
+
+							<MenuItem onAction={() => runCommand(toggleHeaderRow)}>
+								Toggle header row
+							</MenuItem>
+							<MenuItem onAction={() => runCommand(toggleHeaderColumn)}>
+								Toggle header column
+							</MenuItem>
+							<MenuItem onAction={() => runCommand(toggleHeaderCell)}>
+								Toggle header cell
+							</MenuItem>
+
+							<Separator />
+
+							<Submenu label="Justify">
+								<MenuItem
+									onAction={() => runCommand(setCellAttr('justify', 'left'))}
+								>
+									Left
+								</MenuItem>
+								<MenuItem
+									onAction={() => runCommand(setCellAttr('justify', 'center'))}
+								>
+									Center
+								</MenuItem>
+								<MenuItem
+									onAction={() => runCommand(setCellAttr('justify', 'right'))}
+								>
+									Right
+								</MenuItem>
+							</Submenu>
+
+							<Separator />
+
+							<MenuItem onAction={() => runCommand(deleteTable)}>
+								Delete table
+							</MenuItem>
+						</>
+					)}
+				</Menu>
+			</Popover>
+		</MenuTrigger>
+	);
+}
+
 function MenuBar() {
 	return (
 		<div className="flex flex-row items-center gap-2 p-2">
@@ -207,6 +339,8 @@ function MenuBar() {
 			<div className="w-5" />
 
 			<HeadingMenu />
+			<TableMenu />
+
 			<CommandButton
 				Icon={OrderedList}
 				command={wrapInList(docSchema.nodes.ordered_list)}

@@ -1,5 +1,6 @@
 import { Schema } from 'prosemirror-model';
 import { orderedList, bulletList, listItem } from 'prosemirror-schema-list';
+import { tableNodes } from 'prosemirror-tables';
 
 // Some portions from https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.ts
 // Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT)
@@ -39,6 +40,23 @@ const baseSchemaDef = {
 			...listItem,
 			content: 'paragraph block*'
 		},
+
+		...tableNodes({
+			tableGroup: 'block',
+			cellContent: 'block+',
+			cellAttributes: {
+				justify: {
+					default: 'left',
+					getFromDOM(dom) {
+						return dom.style['text-align'];
+					},
+					setDOMAttr(value, attrs) {
+						if (value)
+							attrs.style = (attrs.style || '') + `text-align: ${value};`;
+					}
+				}
+			}
+		}),
 
 		heading: {
 			group: 'block',
@@ -111,6 +129,7 @@ const baseSchemaDef = {
 		},
 
 		code: {
+			code: true,
 			toDOM() {
 				return ['code', 0];
 			},

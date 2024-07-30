@@ -20,6 +20,7 @@ import {
 	exitCode,
 	toggleMark
 } from 'prosemirror-commands';
+import { goToNextCell } from 'prosemirror-tables';
 
 import { baseSchema, docSchema } from './schema.js';
 import { insertNbsp, clearFormatting } from './commands.js';
@@ -64,6 +65,9 @@ export const baseKeymap = {
 	'Mod-Enter': exitCode,
 
 	'Mod-Space': insertNbsp,
+
+	'Shift-Tab': goToNextCell(-1),
+	Tab: goToNextCell(1),
 
 	...schemaCommonKeymap(baseSchema)
 };
