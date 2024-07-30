@@ -41,13 +41,17 @@ const baseSchemaDef = {
 		},
 		sidenote: {
 			content: 'block+',
+			attrs: { numbered: { default: false, validate: 'boolean' } },
 			inline: true,
 			isolating: true,
 			draggable: true,
-			toDOM() {
+			toDOM(node) {
+				let containerClass = 'aside-container';
+				if (node.attrs.numbered) containerClass += ' numbered';
+
 				return [
 					'div',
-					{ class: 'aside-container' },
+					{ class: containerClass },
 					['span', { class: 'aside' }, 0]
 				];
 			},

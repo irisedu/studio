@@ -81,13 +81,22 @@ export function addTable(
 	return true;
 }
 
-export function insertSidenote(state, dispatch) {
+export function getSidenote(state) {
 	const sidenote = state.schema.nodes.sidenote;
-	const { $from, anchor } = state.selection;
+	const { $from } = state.selection;
 
 	for (let i = 0; i <= $from.depth; i++) {
-		if ($from.node(i).type === sidenote) return false;
+		if ($from.node(i).type === sidenote) return $from.start(i);
 	}
+
+	return null;
+}
+
+export function insertSidenote(state, dispatch) {
+	const sidenote = state.schema.nodes.sidenote;
+	const { anchor } = state.selection;
+
+	if (getSidenote(state)) return false;
 
 	if (dispatch) {
 		const tr = state.tr.replaceSelectionWith(
@@ -99,4 +108,19 @@ export function insertSidenote(state, dispatch) {
 	}
 
 	return true;
+}
+
+export function setSidenoteNumbering(numbered) {
+	return (state, dispatch) => {
+		const sidenotePos = getSidenote(state);
+		if (!sidenotePos) return false;
+
+		if (dispatch) {
+			dispatch(
+				state.tr.setNodeAttribute(sidenotePos - 1, 'numbered', numbered)
+			);
+		}
+
+		return true;
+	};
 }

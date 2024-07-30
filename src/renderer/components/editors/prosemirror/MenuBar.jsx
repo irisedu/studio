@@ -35,7 +35,13 @@ import {
 	Separator
 } from 'react-aria-components';
 import { Submenu } from 'iris/aria-components';
-import { clearFormatting, addTable, insertSidenote } from './commands.js';
+import {
+	clearFormatting,
+	addTable,
+	insertSidenote,
+	getSidenote,
+	setSidenoteNumbering
+} from './commands.js';
 
 import Undo from '~icons/tabler/arrow-back-up';
 import Redo from '~icons/tabler/arrow-forward-up';
@@ -51,6 +57,7 @@ import BulletList from '~icons/tabler/list';
 import Outdent from '~icons/tabler/indent-decrease';
 import Table from '~icons/tabler/table';
 import Sidenote from '~icons/tabler/layout-sidebar-right-collapse-filled';
+import SidenoteNumbering from '~icons/tabler/number-1-small';
 
 function markActive(state, markType) {
 	// https://github.com/ProseMirror/prosemirror-example-setup/blob/43c1d95fb8669a86c3869338da00dd6bd974197d/src/menu.ts#L58-L62
@@ -279,6 +286,40 @@ function TableMenu() {
 	);
 }
 
+function SidenoteNumberingToggle() {
+	const [active, setActive] = useState(false);
+	const [sidenotePos, setSidenotePos] = useState();
+	const onChange = useEditorEventCallback((view, value) => {
+		setSidenoteNumbering(value)(view.state, view.dispatch, view);
+		setActive(value);
+
+		view.focus();
+	});
+
+	useEditorEffect((view) => {
+		const sidenotePos = getSidenote(view.state);
+		setSidenotePos(sidenotePos);
+		if (sidenotePos)
+			setActive(view.state.doc.resolve(sidenotePos).parent.attrs.numbered);
+	});
+
+	return (
+		sidenotePos && (
+			<TooltipTrigger delay={300}>
+				<ToggleButton
+					className="round-button"
+					isSelected={active}
+					onChange={onChange}
+					aria-label="Sidenote Numbering"
+				>
+					<SidenoteNumbering className="text-iris-500 w-3/5 h-3/5 m-auto" />
+				</ToggleButton>
+				<Tooltip placement="bottom">Sidenote Numbering</Tooltip>
+			</TooltipTrigger>
+		)
+	);
+}
+
 function MenuBar() {
 	return (
 		<div className="flex flex-row items-center gap-2 p-2">
@@ -366,6 +407,7 @@ function MenuBar() {
 				aria-label="Sidenote"
 				tooltip="Sidenote"
 			/>
+			<SidenoteNumberingToggle />
 		</div>
 	);
 }
