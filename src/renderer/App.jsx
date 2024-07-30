@@ -18,6 +18,7 @@ import {
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 
 import { useSelector, useDispatch } from 'react-redux';
+import { setSidebarOpen } from '$state/appSlice.js';
 import {
 	openTab,
 	closeTab,
@@ -51,6 +52,7 @@ function MenuItems() {
 function App() {
 	const dispatch = useDispatch();
 	const dark = useSelector((state) => state.app.darkTheme);
+	const sidebarOpen = useSelector((state) => state.app.sidebarOpen);
 	const tabData = useSelector((state) => state.tabs.tabs);
 	const tabState = useSelector((state) => state.tabs.tabState);
 	const currentTab = useSelector((state) => state.tabs.currentTab);
@@ -76,8 +78,6 @@ function App() {
 		lastTabs.current = res;
 		return res;
 	}, [tabData]);
-
-	const [sidebarOpen, setSidebarOpen] = useState(true);
 
 	useEffect(() => {
 		if (dark) {
@@ -169,7 +169,7 @@ function App() {
 						className="round-button"
 						aria-label="Toggle sidebar"
 						isSelected={sidebarOpen}
-						onChange={setSidebarOpen}
+						onChange={(open) => dispatch(setSidebarOpen(open))}
 					>
 						{sidebarOpen ? (
 							<SidebarRightFilled className="text-iris-400 w-3/5 h-3/5 m-auto" />

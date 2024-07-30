@@ -5,7 +5,8 @@ export const appSlice = createSlice({
 	name: 'app',
 	initialState: {
 		darkTheme: false,
-		openDirectory: null
+		openDirectory: null,
+		sidebarOpen: true
 	},
 	reducers: {
 		setDarkTheme(state, action) {
@@ -13,11 +14,15 @@ export const appSlice = createSlice({
 		},
 		setOpenDirectory(state, action) {
 			state.openDirectory = action.payload;
+		},
+		setSidebarOpen(state, action) {
+			state.sidebarOpen = action.payload;
 		}
 	}
 });
 
-export const { setDarkTheme, setOpenDirectory } = appSlice.actions;
+export const { setDarkTheme, setOpenDirectory, setSidebarOpen } =
+	appSlice.actions;
 
 export default appSlice.reducer;
 
