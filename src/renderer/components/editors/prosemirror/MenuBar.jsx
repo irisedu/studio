@@ -45,7 +45,9 @@ import {
 	addTable,
 	insertSidenote,
 	getSidenote,
-	setSidenoteNumbering
+	setSidenoteNumbering,
+	insertNode,
+	replaceNode
 } from './commands.js';
 
 import Undo from '~icons/tabler/arrow-back-up';
@@ -133,37 +135,43 @@ function ToggleMarkButton({ Icon, markType, tooltip, ...props }) {
 }
 
 function TextStyleMenu() {
-	const [visible, setVisible] = useState(false);
+	const [normalVisible, setNormalVisible] = useState(false);
+	const [headingsVisible, setHeadingsVisible] = useState(false);
+	const [codeVisible, setCodeVisible] = useState(false);
 	const [active, setActive] = useState(false);
 	const [codeDialogOpen, setCodeDialogOpen] = useState(false);
 	const [language, setLanguage] = useState('');
 
-	const setNormal = useEditorEventCallback((view) => {
-		setBlockType(docSchema.nodes.paragraph)(view.state, view.dispatch, view);
-	});
-
-	const changeHeading = useEditorEventCallback((view, level) => {
-		setBlockType(docSchema.nodes.heading, { level })(
-			view.state,
-			view.dispatch,
-			view
-		);
+	const setBlock = useEditorEventCallback((view, type, attrs) => {
+		setBlockType(type, attrs || {})(view.state, view.dispatch, view);
+		view.focus();
 	});
 
 	const setCode = useEditorEventCallback((view, language) => {
-		setBlockType(docSchema.nodes.code_block, { language })(
+		replaceNode(docSchema.nodes.code_block, { language })(
 			view.state,
 			view.dispatch,
 			view
 		);
+
+		view.focus();
 	});
 
 	useEditorEffect((view) => {
-		setVisible(
-			setBlockType(docSchema.nodes.paragraph)(view.state, null, view) ||
-				setBlockType(docSchema.nodes.heading)(view.state, null, view) ||
-				setBlockType(docSchema.nodes.code_block)(view.state, null, view)
+		setNormalVisible(
+			setBlockType(docSchema.nodes.paragraph)(view.state, null, view)
 		);
+		setHeadingsVisible(
+			setBlockType(docSchema.nodes.heading, { level: 0 })(
+				view.state,
+				null,
+				view
+			) && !getSidenote(view.state)
+		);
+		setCodeVisible(
+			setBlockType(docSchema.nodes.code_block)(view.state, null, view)
+		);
+
 		setActive(
 			isNode(view.state, docSchema.nodes.heading) ||
 				isNode(view.state, docSchema.nodes.code_block)
@@ -171,7 +179,7 @@ function TextStyleMenu() {
 	});
 
 	return (
-		visible && (
+		(normalVisible || headingsVisible || codeVisible) && (
 			<>
 				<Modal
 					isDismissable
@@ -228,17 +236,45 @@ function TextStyleMenu() {
 					</TooltipTrigger>
 					<Popover>
 						<Menu>
-							<MenuItem onAction={setNormal}>Normal text</MenuItem>
-							<MenuItem onAction={() => changeHeading(2)}>Heading 2</MenuItem>
-							<MenuItem onAction={() => changeHeading(3)}>Heading 3</MenuItem>
-							<MenuItem onAction={() => changeHeading(4)}>Heading 4</MenuItem>
-							<MenuItem
-								onAction={() => {
-									setCodeDialogOpen(true);
-								}}
-							>
-								Code Block
-							</MenuItem>
+							{normalVisible && (
+								<MenuItem onAction={() => setBlock(docSchema.nodes.paragraph)}>
+									Normal text
+								</MenuItem>
+							)}
+							{headingsVisible && (
+								<>
+									<MenuItem
+										onAction={() =>
+											setBlock(docSchema.nodes.heading, { level: 2 })
+										}
+									>
+										Heading 2
+									</MenuItem>
+									<MenuItem
+										onAction={() =>
+											setBlock(docSchema.nodes.heading, { level: 3 })
+										}
+									>
+										Heading 3
+									</MenuItem>
+									<MenuItem
+										onAction={() =>
+											setBlock(docSchema.nodes.heading, { level: 4 })
+										}
+									>
+										Heading 4
+									</MenuItem>
+								</>
+							)}
+							{codeVisible && (
+								<MenuItem
+									onAction={() => {
+										setCodeDialogOpen(true);
+									}}
+								>
+									Code Block
+								</MenuItem>
+							)}
 						</Menu>
 					</Popover>
 				</MenuTrigger>
@@ -396,7 +432,7 @@ function SidenoteNumberingToggle() {
 
 function MenuBar() {
 	return (
-		<div className="flex flex-row items-center gap-5 p-2">
+		<div className="flex flex-row items-center gap-6 p-2 overflow-auto">
 			<div className="flex flex-row gap-2">
 				<CommandButton
 					Icon={Undo}
@@ -456,6 +492,14 @@ function MenuBar() {
 
 			<div className="flex flex-row gap-2">
 				<TextStyleMenu />
+
+				<CommandButton
+					Icon={() => <span className="text-iris-500 text-xl">—</span>}
+					command={insertNode(docSchema.nodes.horizontal_rule)}
+					aria-label="Horizontal Rule"
+					tooltip="Horizontal Rule"
+				/>
+
 				<TableMenu />
 
 				<CommandButton
@@ -476,6 +520,7 @@ function MenuBar() {
 					aria-label="List Outdent"
 					tooltip="List Outdent"
 				/>
+
 				<CommandButton
 					Icon={Sidenote}
 					command={insertSidenote}

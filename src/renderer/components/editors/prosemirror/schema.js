@@ -6,7 +6,7 @@ import { tableNodes } from 'prosemirror-tables';
 // Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT)
 const baseSchemaDef = {
 	nodes: {
-		doc: { content: 'block+' },
+		doc: { content: '(block | heading)+' },
 		text: { group: 'inline' },
 		nbsp: {
 			group: 'inline',
@@ -42,7 +42,6 @@ const baseSchemaDef = {
 			parseDOM: [{ tag: 'hr' }]
 		},
 		heading: {
-			group: 'block',
 			content: '(inline | sidenote)*',
 			attrs: { level: { default: 2, validate: 'number' } },
 			defining: true,
@@ -186,7 +185,7 @@ const baseSchemaDef = {
 const docSchemaDef = {
 	nodes: {
 		...baseSchemaDef.nodes,
-		doc: { content: 'block+' }
+		doc: { content: '(block | heading)+' }
 	},
 	marks: {
 		...baseSchemaDef.marks

@@ -4,6 +4,7 @@ import {
 	wrappingInputRule
 } from 'prosemirror-inputrules';
 import { baseSchema, docSchema } from './schema.js';
+import { replaceNode } from './commands.js';
 
 // Some input rules and code from ProseMirror examples
 // Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT)
@@ -74,13 +75,18 @@ function schemaCommonRules(schema) {
 		),
 		wrappingInputRule(/^\s*([-+*])\s$/, schema.nodes.bullet_list),
 
-		textblockTypeInputRule(
-			/^```(\S*)\s+$/,
-			schema.nodes.code_block,
-			(match) => {
-				return { language: match[1] };
-			}
-		)
+		new InputRule(/^```(\S*)\s+$/, (state, match) => {
+			let tr;
+
+			replaceNode(schema.nodes.code_block, { language: match[1] })(
+				state,
+				(cmdTr) => {
+					tr = cmdTr;
+				}
+			);
+
+			return tr;
+		})
 	];
 }
 

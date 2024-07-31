@@ -48,7 +48,7 @@
 		}
 
 		.aside {
-			@apply font-normal text-sm text-left leading-5 float-right clear-both -mr-[40%] mb-1 w-[30%];
+			@apply font-normal text-sm text-left leading-5 float-right clear-both -mr-[50%] mb-1 w-[40%];
 
 			p {
 				@apply my-1;

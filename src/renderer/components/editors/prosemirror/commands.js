@@ -12,6 +12,21 @@ export function insertNode(nodeType) {
 	};
 }
 
+export function replaceNode(nodeType, attrs) {
+	return (state, dispatch) => {
+		const { $from } = state.selection;
+		const from = $from.before();
+		const to = $from.after();
+
+		if (dispatch) {
+			const tr = state.tr.replaceWith(from, to, nodeType.createAndFill(attrs));
+			dispatch(tr.setSelection(TextSelection.near(tr.doc.resolve(from))));
+		}
+
+		return true;
+	};
+}
+
 export function clearFormatting(state, dispatch) {
 	if (dispatch) {
 		const { from, to } = state.selection;
