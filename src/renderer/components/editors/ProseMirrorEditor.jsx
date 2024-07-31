@@ -10,6 +10,7 @@ import nodeViews from './prosemirror/nodeViews.js';
 
 import 'prosemirror-view/style/prosemirror.css';
 import './prosemirror/styles.css';
+import 'katex/dist/katex.min.css';
 
 const editorProps = {
 	attributes: {
@@ -88,7 +89,7 @@ function ProseMirrorEditor({ tabData }) {
 			>
 				<MenuBar />
 
-				<div className="grow w-full overflow-y-scroll bg-iris-100 p-8">
+				<div className="grow w-full overflow-y-scroll bg-iris-100 p-16">
 					<div ref={setMount} />
 				</div>
 			</ProseMirror>

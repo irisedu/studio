@@ -1,5 +1,4 @@
 .ProseMirror {
-	@apply relative;
 	counter-reset: sidenote-counter;
 
 	.display-nbsp {
@@ -35,7 +34,7 @@
 		@apply inline;
 
 		&:not(.numbered)::before {
-			@apply font-sans text-xs font-bold content-['Note_›'] rounded-md bg-blue-200 p-1 cursor-grab;
+			@apply font-sans text-xs text-black font-bold content-['Note_›'] rounded-md bg-blue-200 p-1 cursor-grab;
 		}
 
 		&.numbered::before {
@@ -43,7 +42,7 @@
 			counter-increment: sidenote-counter;
 		}
 
-		&.numbered .aside > :first-child::before {
+		&.numbered .aside > :first-child:not(.math-display)::before {
 			@apply content-[counter(sidenote-counter)] text-xs align-super mr-1;
 		}
 
@@ -66,6 +65,74 @@
 
 	.CodeMirror-languagelabel {
 		@apply absolute top-0 right-0 font-mono text-xs bg-iris-200 px-1 py-0.5 select-none rounded-bl-sm;
+	}
+}
+
+.math-inline {
+	@apply text-blue-500;
+
+	&::before,
+	&::after {
+		@apply text-blue-800 content-['$'];
+	}
+}
+
+.math-display {
+	@apply text-blue-500;
+
+	&::before,
+	&::after {
+		@apply block text-blue-800 content-['$$'];
+	}
+}
+
+.ProseMirror-widget.katex-render {
+	@apply hidden before:hidden;
+
+	& > .katex {
+		@apply text-[1.1rem];
+	}
+
+	&.katex-render--error,
+	&.katex-render--empty {
+		@apply font-mono text-red-500 before:my-2;
+
+		&.katex-render--display {
+			@apply block text-center;
+		}
+	}
+
+	&.katex-render--error {
+		@apply text-xs;
+	}
+
+	&.katex-render--empty {
+		@apply before:content-['(empty)'];
+	}
+
+	&.katex-render--preview {
+		@apply inline before:inline;
+
+		&.katex-render--display {
+			@apply block before:block;
+		}
+
+		& + .math-inline,
+		& + .math-display {
+			@apply hidden;
+		}
+	}
+
+	&.katex-render--focus {
+		@apply inline before:inline absolute bg-iris-200/85 dark:bg-iris-900/80 p-2 -translate-y-full pointer-events-none;
+
+		&.katex-render--display {
+			@apply min-w-[50%];
+		}
+
+		.katex-display {
+			@apply m-0;
+		}
 	}
 }
 

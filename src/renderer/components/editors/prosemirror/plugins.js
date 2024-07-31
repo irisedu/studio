@@ -7,6 +7,7 @@ import { gapCursor } from 'prosemirror-gapcursor';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { tableEditing, columnResizing } from 'prosemirror-tables';
 import { cmArrowHandlers } from './codemirror.js';
+import { katexPlugin } from './katex.js';
 
 const _basePlugins = [
 	history(),
@@ -14,6 +15,7 @@ const _basePlugins = [
 		class: 'ProseMirror-dropcursor',
 		color: false
 	}),
+	katexPlugin,
 	gapCursor(),
 	columnResizing(),
 	tableEditing(),

@@ -11,12 +11,18 @@ import { replaceNode } from './commands.js';
 
 function smartyPantsRule(regex, replacement) {
 	return new InputRule(regex, (state, match, start, end) => {
-		// Disable smartypants rules in inline code
+		// Disable smartypants rules in inline code/math
 		const { $from, empty } = state.selection;
-		const codeType = state.schema.marks.code;
+		const disabledMarks = [
+			state.schema.marks.code,
+			state.schema.marks.math_inline
+		];
 		if (
-			(empty && codeType.isInSet(state.storedMarks || $from.marks())) ||
-			state.doc.rangeHasMark(start, end, codeType)
+			disabledMarks.some(
+				(mark) =>
+					(empty && mark.isInSet(state.storedMarks || $from.marks())) ||
+					state.doc.rangeHasMark(start, end, mark)
+			)
 		)
 			return null;
 
@@ -45,13 +51,13 @@ const smartyPants = [
 	smartyPantsRule(/\.\.\.$/, '…'), // ellipsis
 
 	// cycles
-	new InputRule(/“"$/, '”'),
-	new InputRule(/”"$/, '"'),
-	new InputRule(/""$/, '“'),
+	smartyPantsRule(/“"$/, '”'),
+	smartyPantsRule(/”"$/, '"'),
+	smartyPantsRule(/""$/, '“'),
 
-	new InputRule(/‘'$/, '’'),
-	new InputRule(/’'$/, "'"),
-	new InputRule(/''$/, '‘'),
+	smartyPantsRule(/‘'$/, '’'),
+	smartyPantsRule(/’'$/, "'"),
+	smartyPantsRule(/''$/, '‘'),
 
 	// normal
 	smartyPantsRule(/(?:^|[\s{[(<`'"\u2018\u201C])(")$/, '“'), // open double quote

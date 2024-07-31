@@ -105,6 +105,18 @@ const baseSchemaDef = {
 			}
 		}),
 
+		math_display: {
+			group: 'block',
+			content: 'text*',
+			marks: '',
+			isolating: true,
+			defining: true,
+			code: true,
+			toDOM() {
+				return ['pre', { class: 'math-display' }, ['code', 0]];
+			}
+		},
+
 		code_block: {
 			group: 'block',
 			content: 'text*',
@@ -178,6 +190,13 @@ const baseSchemaDef = {
 				return ['code', 0];
 			},
 			parseDOM: [{ tag: 'code' }]
+		},
+
+		math_inline: {
+			excludes: '_',
+			toDOM() {
+				return ['code', { class: 'math-inline' }, 0];
+			}
 		}
 	}
 };

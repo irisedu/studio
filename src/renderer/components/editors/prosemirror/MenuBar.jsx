@@ -49,6 +49,12 @@ import {
 	insertNode,
 	replaceNode
 } from './commands.js';
+import {
+	getMathPreviewEnabled,
+	setMathPreviewEnabled,
+	toggleInlineMath,
+	insertDisplayMath
+} from './katex.js';
 
 import Undo from '~icons/tabler/arrow-back-up';
 import Redo from '~icons/tabler/arrow-forward-up';
@@ -65,6 +71,8 @@ import Outdent from '~icons/tabler/indent-decrease';
 import Table from '~icons/tabler/table';
 import Sidenote from '~icons/tabler/layout-sidebar-right-collapse-filled';
 import SidenoteNumbering from '~icons/tabler/number-1-small';
+import Math from '~icons/tabler/math';
+import MathPreview from '~icons/tabler/math-function';
 
 function markActive(state, markType) {
 	// https://github.com/ProseMirror/prosemirror-example-setup/blob/43c1d95fb8669a86c3869338da00dd6bd974197d/src/menu.ts#L58-L62
@@ -102,18 +110,18 @@ function CommandButton({ Icon, command, tooltip, alwaysVisible, ...props }) {
 	);
 }
 
-function ToggleMarkButton({ Icon, markType, tooltip, ...props }) {
+function ToggleMarkButton({ Icon, markType, command, tooltip, ...props }) {
 	const [visible, setVisible] = useState(false);
 	const [active, setActive] = useState(false);
 	const onChange = useEditorEventCallback((view, value) => {
-		toggleMark(markType)(view.state, view.dispatch, view);
+		(command || toggleMark(markType))(view.state, view.dispatch, view);
 		setActive(!value);
 
 		view.focus();
 	});
 
 	useEditorEffect((view) => {
-		setVisible(toggleMark(markType)(view.state, null, view));
+		setVisible((command || toggleMark(markType))(view.state, null, view));
 		setActive(markActive(view.state, markType));
 	});
 
@@ -430,6 +438,34 @@ function SidenoteNumberingToggle() {
 	);
 }
 
+function MathPreviewToggle() {
+	const [active, setActive] = useState(false);
+	const onChange = useEditorEventCallback((view, value) => {
+		setMathPreviewEnabled(value)(view.state, view.dispatch);
+		setActive(value);
+
+		view.focus();
+	});
+
+	useEditorEffect((view) => {
+		setActive(getMathPreviewEnabled(view.state));
+	});
+
+	return (
+		<TooltipTrigger delay={300}>
+			<ToggleButton
+				className="round-button"
+				isSelected={active}
+				onChange={onChange}
+				aria-label="Math Preview"
+			>
+				<MathPreview className="text-iris-500 w-3/5 h-3/5 m-auto" />
+			</ToggleButton>
+			<Tooltip placement="bottom">Math Preview</Tooltip>
+		</TooltipTrigger>
+	);
+}
+
 function MenuBar() {
 	return (
 		<div className="flex flex-row items-center gap-6 p-2 overflow-auto">
@@ -528,6 +564,39 @@ function MenuBar() {
 					tooltip="Sidenote"
 				/>
 				<SidenoteNumberingToggle />
+			</div>
+
+			<div className="flex flex-row gap-2">
+				<ToggleMarkButton
+					Icon={() => (
+						<>
+							<Math className="text-iris-500 inline w-4 h-4" />
+							<sup className="text-iris-500 font-bold" aria-hidden>
+								i
+							</sup>
+						</>
+					)}
+					command={toggleInlineMath}
+					markType={docSchema.marks.math_inline}
+					aria-label="Inline Math"
+					tooltip="Inline Math"
+				/>
+
+				<CommandButton
+					Icon={() => (
+						<>
+							<Math className="text-iris-500 inline w-4 h-4" />
+							<sup className="text-iris-500 font-bold" aria-hidden>
+								d
+							</sup>
+						</>
+					)}
+					command={insertDisplayMath}
+					aria-label="Display Math"
+					tooltip="Display Math"
+				/>
+
+				<MathPreviewToggle />
 			</div>
 		</div>
 	);

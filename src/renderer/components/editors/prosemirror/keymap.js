@@ -26,6 +26,7 @@ import { goToNextCell } from 'prosemirror-tables';
 
 import { baseSchema, docSchema } from './schema.js';
 import { insertNode, clearFormatting } from './commands.js';
+import { toggleInlineMath, insertDisplayMath } from './katex.js';
 
 function schemaCommonKeymap(schema) {
 	return {
@@ -56,7 +57,10 @@ function schemaCommonKeymap(schema) {
 		'Mod-`': toggleMark(schema.marks.code),
 
 		'Mod-[': liftListItem(schema.nodes.list_item),
-		'Mod-]': sinkListItem(schema.nodes.list_item)
+		'Mod-]': sinkListItem(schema.nodes.list_item),
+
+		'Alt-Space': toggleInlineMath,
+		'Alt-Shift-Space': insertDisplayMath
 	};
 }
 
