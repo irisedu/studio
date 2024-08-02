@@ -273,8 +273,8 @@ function Sidebar() {
 
 	const [treeData, setTreeData] = useState(new DirectoryTree(tree));
 	const reloadDir = useCallback(() => {
-		treeData.readFromDir(openDirectory).then(setTreeData);
-	}, [treeData, openDirectory]);
+		new DirectoryTree(tree).readFromDir(openDirectory).then(setTreeData);
+	}, [openDirectory]);
 
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [deletePaths, setDeletePaths] = useState([]);
