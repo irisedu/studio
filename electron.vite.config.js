@@ -4,6 +4,19 @@ import path from 'path';
 import Icons from 'unplugin-icons/vite';
 import svgr from 'vite-plugin-svgr';
 
+const transformIndexHtmlPlugin = () => ({
+	name: 'transform-html',
+	transformIndexHtml: {
+		order: 'pre',
+		handler(html, ctx) {
+			return html.replace(
+				'<%= devtools %>',
+				ctx.server ? '<script src="http://localhost:8097"></script>' : ''
+			);
+		}
+	}
+});
+
 export default defineConfig({
 	main: {
 		plugins: [externalizeDepsPlugin()],
@@ -25,6 +38,7 @@ export default defineConfig({
 	},
 	renderer: {
 		plugins: [
+			transformIndexHtmlPlugin(),
 			react(),
 			Icons({
 				compiler: 'jsx',
