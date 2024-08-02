@@ -57,11 +57,11 @@ body {
 .roundout-tabs {
 	@apply h-full;
 
-	.react-aria-TabList {
+	& > * > .react-aria-TabList {
 		@apply flex flex-row gap-2;
 	}
 
-	.react-aria-Tab {
+	& > * > .react-aria-TabList > .react-aria-Tab {
 		@apply relative cursor-pointer font-sans text-black outline-none border-transparent border-2 whitespace-nowrap;
 
 		-webkit-app-region: no-drag;
@@ -71,7 +71,7 @@ body {
 		}
 
 		&[data-selected] {
-			@apply bg-iris-50 rounded-tl-[0.5rem] rounded-tr-[0.5rem] border-iris-200 border-b-0;
+			@apply bg-iris-50 rounded-t-[0.5rem] border-iris-200 border-b-0;
 
 			/* https://css-tricks.com/tabs-with-round-out-borders/ */
 			/* &::before, &::after: roundout borders */
@@ -90,7 +90,7 @@ body {
 
 			/* span::after: cover bottom and sharp corner borders */
 			span::after {
-				@apply absolute content-[''] -left-[0.5rem] -right-[0.5rem] h-3 -bottom-1.5 bg-iris-50;
+				@apply absolute content-[''] -left-[0.5rem] -right-[0.5rem] h-2 -bottom-1 bg-iris-50;
 			}
 		}
 

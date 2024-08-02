@@ -47,8 +47,6 @@ function schemaCommonKeymap(schema) {
 		'Mod-Space': insertNode(schema.nodes.nbsp),
 		'Mod-Enter': chainCommands(exitCode, insertNode(schema.nodes.hard_break)),
 
-		'Mod-Shift--': insertNode(schema.nodes.horizontal_rule),
-
 		'Mod-i': toggleMark(schema.marks.em),
 		'Mod-b': toggleMark(schema.marks.strong),
 		'Mod-u': toggleMark(schema.marks.u),

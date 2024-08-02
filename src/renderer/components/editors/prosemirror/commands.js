@@ -79,24 +79,22 @@ function createTable(state, rowsCount, colsCount, withHeaderRow) {
 	return types.table.createChecked(null, rows);
 }
 
-export function addTable(
-	state,
-	dispatch,
-	{ rowsCount, colsCount, withHeaderRow }
-) {
-	const { anchor } = state.selection;
+export function addTable({ rowsCount, colsCount, withHeaderRow }) {
+	return (state, dispatch) => {
+		const { anchor } = state.selection;
 
-	if (dispatch) {
-		const nodes = createTable(state, rowsCount, colsCount, withHeaderRow);
-		const tr = state.tr.replaceSelectionWith(nodes).scrollIntoView();
-		const resolvedPos = tr.doc.resolve(anchor + 1);
+		if (dispatch) {
+			const nodes = createTable(state, rowsCount, colsCount, withHeaderRow);
+			const tr = state.tr.replaceSelectionWith(nodes).scrollIntoView();
+			const resolvedPos = tr.doc.resolve(anchor + 1);
 
-		tr.setSelection(TextSelection.near(resolvedPos));
+			tr.setSelection(TextSelection.near(resolvedPos));
 
-		dispatch(tr);
-	}
+			dispatch(tr);
+		}
 
-	return true;
+		return true;
+	};
 }
 
 export function getSidenote(state) {

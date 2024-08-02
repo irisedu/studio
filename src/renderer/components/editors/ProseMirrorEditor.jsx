@@ -5,7 +5,7 @@ import { Node } from 'prosemirror-model';
 import { docSchema } from './prosemirror/schema.js';
 import { docPlugins } from './prosemirror/plugins.js';
 import { useFileEditor } from './editorUtils.js';
-import MenuBar from './prosemirror/MenuBar.jsx';
+import MenuBar from './prosemirror/menu/MenuBar.jsx';
 import nodeViews from './prosemirror/nodeViews.js';
 
 import 'prosemirror-view/style/prosemirror.css';
