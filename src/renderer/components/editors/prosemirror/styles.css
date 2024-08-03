@@ -12,6 +12,14 @@
 		@apply overflow-x-auto;
 	}
 
+	h1.title {
+		@apply relative;
+
+		&:has(> .ProseMirror-trailingBreak)::before {
+			@apply absolute italic content-['Click_to_add_title'] text-black/60 dark:text-white/60 cursor-text;
+		}
+	}
+
 	td,
 	th {
 		@apply relative min-w-24;

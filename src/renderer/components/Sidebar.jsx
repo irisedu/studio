@@ -187,6 +187,7 @@ function Node({ tree, node, style, dragHandle }) {
 						className="grow max-w-[60%]"
 					>
 						<TextField
+							className="react-aria-TextField my-0"
 							aria-label="Rename"
 							onFocusChange={(focused) => {
 								if (focused) {
@@ -210,7 +211,7 @@ function Node({ tree, node, style, dragHandle }) {
 							autoFocus
 						>
 							<Input
-								className="react-aria-Input outline-none"
+								className="react-aria-Input outline-none border-none"
 								ref={renameRef}
 							/>
 						</TextField>

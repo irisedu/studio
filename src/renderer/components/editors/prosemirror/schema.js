@@ -204,7 +204,25 @@ const baseSchemaDef = {
 const docSchemaDef = {
 	nodes: {
 		...baseSchemaDef.nodes,
-		doc: { content: '(block | heading)+' }
+		doc: { content: 'frontmatter (block | heading)+' },
+
+		frontmatter: {
+			content: 'title frontmatter_attributes',
+			toDOM() {
+				return ['div', { class: 'frontmatter' }, 0];
+			}
+		},
+		title: {
+			content: 'text*',
+			toDOM() {
+				return ['h1', { class: 'title' }, 0];
+			},
+			parseDOM: [{ tag: 'h1' }]
+		},
+		frontmatter_attributes: {
+			attrs: { data: { default: null } },
+			selectable: false
+		}
 	},
 	marks: {
 		...baseSchemaDef.marks

@@ -8,8 +8,10 @@ import { dropCursor } from 'prosemirror-dropcursor';
 import { tableEditing, columnResizing } from 'prosemirror-tables';
 import { cmArrowHandlers } from './codemirror.js';
 import { katexPlugin } from './katex.js';
+import { react } from '@nytimes/react-prosemirror';
 
 const _basePlugins = [
+	react(),
 	history(),
 	dropCursor({
 		class: 'ProseMirror-dropcursor',

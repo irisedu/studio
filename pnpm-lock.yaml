@@ -106,7 +106,7 @@ importers:
         version: 0.4.8(eslint@8.57.0)
       iris:
         specifier: github:irisedu/iris
-        version: https://codeload.github.com/irisedu/iris/tar.gz/8b6e487c2e3a043aed78bf5cf71b81369c382133
+        version: https://codeload.github.com/irisedu/iris/tar.gz/721632e8d5fc4eea1847e8564f0bc1f7d8468376
       katex:
         specifier: ^0.16.11
         version: 0.16.11
@@ -1390,8 +1390,8 @@ packages:
       react-redux:
         optional: true
 
-  '@remix-run/router@1.18.0':
-    resolution: {integrity: sha512-L3jkqmqoSVBVKHfpGZmLrex0lxR5SucGA0sUfFzGctehw+S/ggL9L/0NnC5mw6P8HUWpFZ3nQw3cRApjjWx9Sw==}
+  '@remix-run/router@1.19.0':
+    resolution: {integrity: sha512-zDICCLKEwbVYTS6TjYaWtHXxkdoUvD/QXvyVZjGCsWz5vyH7aFeONlPffPdW+Y/t6KT0MgXb2Mfjun9YpWN1dA==}
     engines: {node: '>=14.0.0'}
 
   '@rollup/pluginutils@5.1.0':
@@ -2825,8 +2825,8 @@ packages:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
 
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/8b6e487c2e3a043aed78bf5cf71b81369c382133:
-    resolution: {tarball: https://codeload.github.com/irisedu/iris/tar.gz/8b6e487c2e3a043aed78bf5cf71b81369c382133}
+  iris@https://codeload.github.com/irisedu/iris/tar.gz/721632e8d5fc4eea1847e8564f0bc1f7d8468376:
+    resolution: {tarball: https://codeload.github.com/irisedu/iris/tar.gz/721632e8d5fc4eea1847e8564f0bc1f7d8468376}
     version: 0.0.0
 
   is-array-buffer@3.0.4:
@@ -3670,15 +3670,15 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
 
-  react-router-dom@6.25.1:
-    resolution: {integrity: sha512-0tUDpbFvk35iv+N89dWNrJp+afLgd+y4VtorJZuOCXK0kkCWjEvb3vTJM++SYvMEpbVwXKf3FjeVveVEb6JpDQ==}
+  react-router-dom@6.26.0:
+    resolution: {integrity: sha512-RRGUIiDtLrkX3uYcFiCIxKFWMcWQGMojpYZfcstc63A1+sSnVgILGIm9gNUA6na3Fm1QuPGSBQH2EMbAZOnMsQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
 
-  react-router@6.25.1:
-    resolution: {integrity: sha512-u8ELFr5Z6g02nUtpPAggP73Jigj1mRePSwhS/2nkTrlPU5yEkH1vYzWNyvSnSzeeE2DNqWdH+P8OhIh9wuXhTw==}
+  react-router@6.26.0:
+    resolution: {integrity: sha512-wVQq0/iFYd3iZ9H2l3N3k4PL8EEHcb0XlU2Na8nEwmiXgIUElEH6gaJDtUQxJ+JFzmIXaQjfdpcGWaM6IoQGxg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
@@ -6248,7 +6248,7 @@ snapshots:
       react: 18.3.1
       react-redux: 9.1.2(react@18.3.1)(redux@5.0.1)
 
-  '@remix-run/router@1.18.0': {}
+  '@remix-run/router@1.19.0': {}
 
   '@rollup/pluginutils@5.1.0(rollup@4.18.1)':
     dependencies:
@@ -8013,7 +8013,7 @@ snapshots:
 
   ipaddr.js@1.9.1: {}
 
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/8b6e487c2e3a043aed78bf5cf71b81369c382133:
+  iris@https://codeload.github.com/irisedu/iris/tar.gz/721632e8d5fc4eea1847e8564f0bc1f7d8468376:
     dependencies:
       highlight.js: 11.10.0
       highlightjs-line-numbers.js: 2.8.0
@@ -8022,7 +8022,7 @@ snapshots:
       react-aria-components: 1.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
       react-responsive: 10.0.0(react@18.3.1)
-      react-router-dom: 6.25.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-router-dom: 6.26.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
 
@@ -8892,16 +8892,16 @@ snapshots:
       react: 18.3.1
       shallow-equal: 3.1.0
 
-  react-router-dom@6.25.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-router-dom@6.26.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@remix-run/router': 1.18.0
+      '@remix-run/router': 1.19.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-router: 6.25.1(react@18.3.1)
+      react-router: 6.26.0(react@18.3.1)
 
-  react-router@6.25.1(react@18.3.1):
+  react-router@6.26.0(react@18.3.1):
     dependencies:
-      '@remix-run/router': 1.18.0
+      '@remix-run/router': 1.19.0
       react: 18.3.1
 
   react-stately@3.31.1(react@18.3.1):

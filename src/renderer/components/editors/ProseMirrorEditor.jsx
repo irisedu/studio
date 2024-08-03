@@ -7,6 +7,8 @@ import { docPlugins } from './prosemirror/plugins.js';
 import { useFileEditor } from './editorUtils.js';
 import MenuBar from './prosemirror/menu/MenuBar.jsx';
 import nodeViews from './prosemirror/nodeViews.js';
+import reactNodeViews from './prosemirror/reactNodeViews.jsx';
+import { useNodeViews } from '@nytimes/react-prosemirror';
 
 import 'prosemirror-view/style/prosemirror.css';
 import './prosemirror/styles.css';
@@ -31,6 +33,9 @@ const defaultState = EditorState.create({
 
 function ProseMirrorEditor({ tabData }) {
 	const [mount, setMount] = useState();
+
+	const { nodeViews: rNodeViews, renderNodeViews } =
+		useNodeViews(reactNodeViews);
 
 	const [editorState, setEditorState] = useState(defaultState);
 	const stateRef = useRef(defaultState);
@@ -72,7 +77,10 @@ function ProseMirrorEditor({ tabData }) {
 				{...editorProps}
 				mount={mount}
 				state={editorState}
-				nodeViews={nodeViews}
+				nodeViews={{
+					...rNodeViews,
+					...nodeViews
+				}}
 				dispatchTransaction={(tr) => {
 					setEditorState((s) => {
 						const newState = s.apply(tr);
@@ -92,6 +100,8 @@ function ProseMirrorEditor({ tabData }) {
 				<div className="grow w-full overflow-y-scroll bg-iris-100 p-16">
 					<div ref={setMount} />
 				</div>
+
+				{renderNodeViews()}
 			</ProseMirror>
 		</div>
 	);
