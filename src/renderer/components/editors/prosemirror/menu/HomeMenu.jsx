@@ -49,7 +49,6 @@ import {
 import Bold from '~icons/tabler/bold';
 import Italic from '~icons/tabler/italic';
 import Underline from '~icons/tabler/underline';
-import SmallCaps from '~icons/tabler/letter-a-small';
 import Code from '~icons/tabler/code';
 import ClearFormatting from '~icons/tabler/clear-formatting';
 import TextStyle from '~icons/tabler/text-size';
@@ -314,12 +313,6 @@ function HomeMenu({ index }) {
 					markType={docSchema.marks.u}
 					tooltip="Underline"
 					keys={['Mod', 'U']}
-				/>
-				<ToggleMarkButton
-					index={formatIdx++}
-					Icon={SmallCaps}
-					markType={docSchema.marks.smallcaps}
-					tooltip="Small Caps"
 				/>
 				<ToggleMarkButton
 					index={formatIdx++}

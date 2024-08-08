@@ -174,6 +174,20 @@ const baseSchemaDef = {
 			},
 			parseDOM: [{ tag: 's' }, { style: 'text-decoration=line-through' }]
 		},
+		sup: {
+			excludes: 'sub',
+			toDOM() {
+				return ['sup', 0];
+			},
+			parseDOM: [{ tag: 'sup' }]
+		},
+		sub: {
+			excludes: 'sup',
+			toDOM() {
+				return ['sub', 0];
+			},
+			parseDOM: [{ tag: 'sub' }]
+		},
 		smallcaps: {
 			toDOM() {
 				return ['span', { class: 'font-smallcaps' }, 0];

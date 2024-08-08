@@ -14,6 +14,7 @@ import {
 } from './VisibilityContext.jsx';
 
 import HomeMenu from './HomeMenu.jsx';
+import FormatMenu from './FormatMenu.jsx';
 import InsertMenu from './InsertMenu.jsx';
 import TableMenu from './TableMenu.jsx';
 
@@ -22,6 +23,7 @@ import Redo from '~icons/tabler/arrow-forward-up';
 
 const tabs = [
 	{ id: 'home', name: 'Home' },
+	{ id: 'format', name: 'Format' },
 	{ id: 'insert', name: 'Insert' },
 	{ id: 'table', name: 'Table' }
 ];
@@ -29,7 +31,8 @@ const tabs = [
 const digits = {
 	Digit1: 0,
 	Digit2: 1,
-	Digit3: 2
+	Digit3: 2,
+	Digit4: 3
 };
 
 function MenuBar() {
@@ -93,11 +96,19 @@ function MenuBar() {
 						</TabPanel>
 
 						<TabPanel
+							id="format"
+							className="react-aria-TabPanel flex flex-row gap-6"
+							shouldForceMount
+						>
+							<FormatMenu index={1} />
+						</TabPanel>
+
+						<TabPanel
 							id="insert"
 							className="react-aria-TabPanel flex flex-row gap-6"
 							shouldForceMount
 						>
-							<InsertMenu index={1} setCurrentTab={setCurrentTab} />
+							<InsertMenu index={2} setCurrentTab={setCurrentTab} />
 						</TabPanel>
 
 						<TabPanel
@@ -105,7 +116,7 @@ function MenuBar() {
 							className="react-aria-TabPanel flex flex-row gap-6"
 							shouldForceMount
 						>
-							<TableMenu index={2} />
+							<TableMenu index={3} />
 						</TabPanel>
 					</VisibilityContext.Provider>
 				</div>

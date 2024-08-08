@@ -50,6 +50,8 @@ function schemaCommonKeymap(schema) {
 		'Mod-i': toggleMark(schema.marks.em),
 		'Mod-b': toggleMark(schema.marks.strong),
 		'Mod-u': toggleMark(schema.marks.u),
+		'Mod-,': toggleMark(schema.marks.sub),
+		'Mod-.': toggleMark(schema.marks.sup),
 		'Alt-Shift-5': toggleMark(schema.marks.s),
 
 		'Mod-`': toggleMark(schema.marks.code),
