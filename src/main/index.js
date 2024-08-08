@@ -58,7 +58,7 @@ function createWindow() {
 	ipcMain.on('window:maximize', (e) => {
 		const window = BrowserWindow.fromWebContents(e.sender);
 
-		if (window.isMaximized) window.unmaximize();
+		if (window.isMaximized()) window.unmaximize();
 		else window.maximize();
 	});
 
