@@ -13,10 +13,12 @@
 	}
 
 	h1.title {
-		@apply relative;
+		.ProseMirror-trailingBreak {
+			@apply hidden;
+		}
 
-		&:has(> .ProseMirror-trailingBreak)::before {
-			@apply absolute italic content-['Click_to_add_title'] text-black/60 dark:text-white/60 cursor-text;
+		&:has(> .ProseMirror-trailingBreak)::after {
+			@apply italic content-['Click_to_add_title'] text-black/60 dark:text-white/60 cursor-text;
 		}
 	}
 
