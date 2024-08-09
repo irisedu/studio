@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 import react from 'eslint-plugin-react';
 
@@ -19,11 +20,12 @@ const compat = new FlatCompat({
 
 export default [
 	js.configs.recommended,
+	...tseslint.configs.strict,
 	prettier,
 	react.configs.flat.recommended,
 	react.configs.flat['jsx-runtime'],
 	{
-		files: ['**/*.js', '**/*.jsx']
+		files: ['**/*.js', '**/*.ts', '**/*.tsx']
 	},
 	{
 		ignores: ['**/dist', '**/.eslintrc.cjs', 'dist/', 'out/']
@@ -59,7 +61,8 @@ export default [
 			'react/jsx-no-target-blank': 'off',
 			'react/prop-types': 'off',
 			'react-refresh/only-export-components': 'off',
-			'import/no-absolute-path': 'off'
+			'import/no-absolute-path': 'off',
+			'@typescript-eslint/no-non-null-assertion': 'off'
 		}
 	}
 ];
