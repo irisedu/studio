@@ -14,7 +14,7 @@ import type { EditorState, Command } from 'prosemirror-state';
 import type { NodeType, MarkType } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
 import { toggleMark } from 'prosemirror-commands';
-import { useVisibility } from './VisibilityContext';
+import { useVisibility } from '$components/VisibilityContext';
 
 export function markActive(state: EditorState, markType: MarkType) {
 	// https://github.com/ProseMirror/prosemirror-example-setup/blob/43c1d95fb8669a86c3869338da00dd6bd974197d/src/menu.ts#L58-L62

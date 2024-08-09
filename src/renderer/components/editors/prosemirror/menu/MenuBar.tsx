@@ -9,7 +9,10 @@ import {
 } from 'react-aria-components';
 import { undo, redo } from 'prosemirror-history';
 import { CommandButton } from './components';
-import { useVisibilityParent, VisibilityContext } from './VisibilityContext';
+import {
+	useVisibilityParent,
+	VisibilityContext
+} from '$components/VisibilityContext';
 
 import HomeMenu from './HomeMenu';
 import FormatMenu from './FormatMenu';

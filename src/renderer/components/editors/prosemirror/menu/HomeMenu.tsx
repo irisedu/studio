@@ -3,20 +3,13 @@ import {
 	useEditorEventCallback,
 	useEditorEffect
 } from '@nytimes/react-prosemirror';
-import { languages } from '@codemirror/language-data';
 import {
-	Button,
 	ToggleButton,
 	MenuTrigger,
 	Popover,
 	Menu,
-	MenuItem,
-	Modal,
-	Dialog,
-	Heading,
-	ListBoxItem
+	MenuItem
 } from 'react-aria-components';
-import { Dropdown } from 'iris/aria-components';
 import type { NodeType, Attrs } from 'prosemirror-model';
 import { setBlockType } from 'prosemirror-commands';
 import { wrapInList, liftListItem } from 'prosemirror-schema-list';
@@ -45,7 +38,8 @@ import {
 	useVisibilityParent,
 	VisibilityContext,
 	VisibilityGroup
-} from './VisibilityContext';
+} from '$components/VisibilityContext';
+import CodeLanguageDialog from './CodeLanguageDialog';
 
 import Bold from '~icons/tabler/bold';
 import Italic from '~icons/tabler/italic';
@@ -61,70 +55,6 @@ import Outdent from '~icons/tabler/indent-decrease';
 import Sidenote from '~icons/tabler/layout-sidebar-right-collapse-filled';
 import SidenoteNumbering from '~icons/tabler/number-1-small';
 
-interface CodeLanguageDialogProps {
-	isOpen: boolean;
-	setIsOpen: (open: boolean) => void;
-	language: string;
-	setLanguage: (lang: string) => void;
-}
-
-function CodeLanguageDialog({
-	isOpen,
-	setIsOpen,
-	language,
-	setLanguage
-}: CodeLanguageDialogProps) {
-	const setCode = useEditorEventCallback((view, language) => {
-		replaceNode(docSchema.nodes.code_block, { language })(
-			view.state,
-			view.dispatch,
-			view
-		);
-
-		view.focus();
-	});
-
-	return (
-		<Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen}>
-			<Dialog>
-				<Heading slot="title">Insert code block</Heading>
-				<Dropdown
-					label="Language"
-					selectedKey={language}
-					onSelectionChange={(key) => setLanguage(key as string)}
-				>
-					<ListBoxItem id="">Plain text</ListBoxItem>
-					{languages.map((lang) => (
-						<ListBoxItem
-							key={lang.name}
-							id={lang.alias.length ? lang.alias[0] : lang.name}
-							textValue={lang.name}
-						>
-							{lang.name}
-							{lang.alias.length && !lang.alias[0].includes(' ') && (
-								<>
-									{' '}
-									(<span className="font-mono">{lang.alias[0]}</span>)
-								</>
-							)}
-						</ListBoxItem>
-					))}
-				</Dropdown>
-				<Button
-					className="react-aria-Button border-iris-300"
-					autoFocus
-					onPress={() => {
-						setCode(language);
-						setIsOpen(false);
-					}}
-				>
-					Create
-				</Button>
-			</Dialog>
-		</Modal>
-	);
-}
-
 function TextStyleMenu({ index }: { index: number }) {
 	const [visible, setVisible] = useVisibility(index);
 	const [normalVisible, setNormalVisible] = useState(false);
@@ -135,6 +65,15 @@ function TextStyleMenu({ index }: { index: number }) {
 
 	const [codeDialogOpen, setCodeDialogOpen] = useState(false);
 	const [language, setLanguage] = useState('');
+	const setCode = useEditorEventCallback((view, language) => {
+		replaceNode(docSchema.nodes.code_block, { language })(
+			view.state,
+			view.dispatch,
+			view
+		);
+
+		view.focus();
+	});
 
 	const setBlock = useEditorEventCallback(
 		(view, type: NodeType, attrs?: Attrs) => {
@@ -179,6 +118,7 @@ function TextStyleMenu({ index }: { index: number }) {
 				setIsOpen={setCodeDialogOpen}
 				language={language}
 				setLanguage={setLanguage}
+				onPress={() => setCode(language)}
 			/>
 
 			<MenuTrigger>

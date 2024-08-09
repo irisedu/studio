@@ -5,7 +5,7 @@ import {
 	useVisibilityParent,
 	VisibilityContext,
 	VisibilityGroup
-} from './VisibilityContext';
+} from '$components/VisibilityContext';
 
 import Space from '~icons/tabler/space';
 import Table from '~icons/tabler/table-plus';

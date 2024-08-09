@@ -3,7 +3,7 @@ import {
 	useVisibilityParent,
 	VisibilityContext,
 	VisibilityGroup
-} from './VisibilityContext';
+} from '$components/VisibilityContext';
 import { docSchema } from '../schema';
 
 import Strikethrough from '~icons/tabler/strikethrough';
