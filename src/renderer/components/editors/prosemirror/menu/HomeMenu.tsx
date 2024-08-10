@@ -24,7 +24,8 @@ import {
 	replaceNode,
 	getSidenote,
 	insertSidenote,
-	setSidenoteNumbering
+	setSidenoteNumbering,
+	toggleLink
 } from '../commands';
 import { docSchema } from '../schema';
 import {
@@ -44,6 +45,7 @@ import CodeLanguageDialog from './CodeLanguageDialog';
 import Bold from '~icons/tabler/bold';
 import Italic from '~icons/tabler/italic';
 import Underline from '~icons/tabler/underline';
+import Link from '~icons/tabler/link';
 import Code from '~icons/tabler/code';
 import ClearFormatting from '~icons/tabler/clear-formatting';
 import TextStyle from '~icons/tabler/text-size';
@@ -268,6 +270,14 @@ function HomeMenu({ index }: { index: number }) {
 					markType={docSchema.marks.u}
 					tooltip="Underline"
 					keys={['Mod', 'U']}
+				/>
+				<ToggleMarkButton
+					index={formatIdx++}
+					Icon={Link}
+					markType={docSchema.marks.link}
+					command={toggleLink}
+					tooltip="Link"
+					keys={['Mod', 'K']}
 				/>
 				<ToggleMarkButton
 					index={formatIdx++}

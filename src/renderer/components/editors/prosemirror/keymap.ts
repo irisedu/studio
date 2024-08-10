@@ -26,7 +26,7 @@ import {
 import { goToNextCell } from 'prosemirror-tables';
 
 import { baseSchema, docSchema } from './schema';
-import { insertNode, clearFormatting } from './commands';
+import { insertNode, clearFormatting, toggleLink } from './commands';
 import { toggleInlineMath, insertDisplayMath } from './katex';
 
 function schemaCommonKeymap(schema: Schema) {
@@ -84,6 +84,8 @@ export const baseKeymap = {
 	'Mod-Shift-z': redo,
 	'Mod-\\': clearFormatting,
 	'Mod-a': selectAll,
+
+	'Mod-k': toggleLink,
 
 	'Shift-Tab': goToNextCell(-1),
 	Tab: goToNextCell(1),

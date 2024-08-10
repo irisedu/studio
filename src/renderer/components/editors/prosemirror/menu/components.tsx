@@ -14,15 +14,8 @@ import type { EditorState, Command } from 'prosemirror-state';
 import type { NodeType, MarkType } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
 import { toggleMark } from 'prosemirror-commands';
+import { markActive } from '../commands';
 import { useVisibility } from '$components/VisibilityContext';
-
-export function markActive(state: EditorState, markType: MarkType) {
-	// https://github.com/ProseMirror/prosemirror-example-setup/blob/43c1d95fb8669a86c3869338da00dd6bd974197d/src/menu.ts#L58-L62
-	const { from, $from, to, empty } = state.selection;
-	if (empty) return !!markType.isInSet(state.storedMarks || $from.marks());
-
-	return state.doc.rangeHasMark(from, to, markType);
-}
 
 export function isNode(state: EditorState, nodeType: NodeType) {
 	return state.selection.$from.parent.type === nodeType;

@@ -127,7 +127,7 @@ importers:
         version: 15.9.0
       iris:
         specifier: github:irisedu/iris
-        version: https://codeload.github.com/irisedu/iris/tar.gz/8896eb97e7899643e4f6e7571bbce70a2aeed7c2(@types/react@18.3.3)
+        version: https://codeload.github.com/irisedu/iris/tar.gz/2f7f4524761677527f084bc3c0ccef96db7d36d1(@types/react@18.3.3)
       katex:
         specifier: ^0.16.11
         version: 0.16.11
@@ -2814,8 +2814,8 @@ packages:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
 
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/8896eb97e7899643e4f6e7571bbce70a2aeed7c2:
-    resolution: {tarball: https://codeload.github.com/irisedu/iris/tar.gz/8896eb97e7899643e4f6e7571bbce70a2aeed7c2}
+  iris@https://codeload.github.com/irisedu/iris/tar.gz/2f7f4524761677527f084bc3c0ccef96db7d36d1:
+    resolution: {tarball: https://codeload.github.com/irisedu/iris/tar.gz/2f7f4524761677527f084bc3c0ccef96db7d36d1}
     version: 0.0.0
 
   is-array-buffer@3.0.4:
@@ -7934,7 +7934,7 @@ snapshots:
 
   ipaddr.js@1.9.1: {}
 
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/8896eb97e7899643e4f6e7571bbce70a2aeed7c2(@types/react@18.3.3):
+  iris@https://codeload.github.com/irisedu/iris/tar.gz/2f7f4524761677527f084bc3c0ccef96db7d36d1(@types/react@18.3.3):
     dependencies:
       highlight.js: 11.10.0
       highlightjs-line-numbers.js: 2.8.0

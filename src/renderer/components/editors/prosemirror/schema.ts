@@ -204,6 +204,23 @@ const baseSchemaDef = {
 			]
 		} as MarkSpec,
 
+		link: {
+			attrs: { href: { default: '', validate: 'string' } },
+			inclusive: false,
+			excludes: 'u',
+			toDOM(node) {
+				return ['a', node.attrs, 0];
+			},
+			parseDOM: [
+				{
+					tag: 'a[href]',
+					getAttrs(dom) {
+						return { href: dom.getAttribute('href') };
+					}
+				}
+			]
+		} as MarkSpec,
+
 		code: {
 			toDOM() {
 				return ['code', 0];

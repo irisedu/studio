@@ -1,10 +1,18 @@
-import type { NodeType, Attrs } from 'prosemirror-model';
+import type { NodeType, MarkType, Attrs } from 'prosemirror-model';
 import { tableNodeTypes } from 'prosemirror-tables';
 import {
 	TextSelection,
 	type Command,
 	type EditorState
 } from 'prosemirror-state';
+
+export function markActive(state: EditorState, markType: MarkType) {
+	// https://github.com/ProseMirror/prosemirror-example-setup/blob/43c1d95fb8669a86c3869338da00dd6bd974197d/src/menu.ts#L58-L62
+	const { from, $from, to, empty } = state.selection;
+	if (empty) return !!markType.isInSet(state.storedMarks || $from.marks());
+
+	return state.doc.rangeHasMark(from, to, markType);
+}
 
 export function insertNode(nodeType: NodeType): Command {
 	return (state, dispatch) => {
@@ -164,3 +172,28 @@ export function setSidenoteNumbering(numbered: boolean): Command {
 		return true;
 	};
 }
+
+export const toggleLink: Command = (state, dispatch) => {
+	const link = state.schema.marks.link;
+	const { from, to, empty } = state.selection;
+
+	if (markActive(state, link)) {
+		if (!dispatch) return true;
+
+		// Clear mark from all links in range
+		const tr = state.tr;
+
+		state.doc.nodesBetween(from, to, (node, pos) => {
+			if (link.isInSet(node.marks)) tr.removeMark(pos, pos + node.nodeSize);
+		});
+
+		dispatch(tr);
+	} else {
+		if (empty) return false;
+
+		// Add link across entire range
+		if (dispatch) dispatch(state.tr.addMark(from, to, link.create()));
+	}
+
+	return true;
+};

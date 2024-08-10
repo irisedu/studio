@@ -6,6 +6,7 @@ import { docSchema } from './prosemirror/schema';
 import { docPlugins } from './prosemirror/plugins';
 import { useFileEditor } from './editorUtils';
 import MenuBar from './prosemirror/menu/MenuBar';
+import FloatingMenu from './prosemirror/FloatingMenu';
 import nodeViews from './prosemirror/nodeViews';
 import reactNodeViews from './prosemirror/reactNodeViews';
 import { useNodeViews } from '@nytimes/react-prosemirror';
@@ -20,7 +21,7 @@ const editorProps = {
 	attributes: {
 		spellcheck: 'false',
 		class:
-			'outline-none max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch] border-l-2 border-r-2 border-iris-300'
+			'relative outline-none max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch] border-l-2 border-r-2 border-iris-300'
 	}
 };
 
@@ -98,6 +99,7 @@ function ProseMirrorEditor({ tabData }: { tabData: TabData }) {
 				}}
 			>
 				<MenuBar />
+				<FloatingMenu />
 
 				<div className="grow w-full overflow-y-scroll bg-iris-100 p-16">
 					<div ref={setMount} />
