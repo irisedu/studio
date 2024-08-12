@@ -58,10 +58,14 @@ function ProseMirrorEditor({ tabData }: { tabData: TabData }) {
 			stateRef.current = prevState;
 		},
 		getFile() {
-			return JSON.stringify({
-				version: 1,
-				data: stateRef.current.doc.toJSON()
-			});
+			return JSON.stringify(
+				{
+					version: 1,
+					data: stateRef.current.doc.toJSON()
+				},
+				null,
+				'\t'
+			);
 		},
 		restoreFile(contents) {
 			const newState = EditorState.create({
